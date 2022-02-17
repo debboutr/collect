@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <title>monies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+  <body>
+      <div class="grid-container">
+        <div class="item1">
+          <table border = 1>
+             <thead>
+                <td>Date</td>
+                <td>Wages</td>
+                <td>No. of bags</td>
+             </thead>
+
+             {% for row in rows %}
+                <tr>
+                   <td>{{ row["date"] }}</td>
+                   <td>{{ row["wage"] }}</td>
+                   <td>{{ row["bags"] }}</td>
+                </tr>
+             {% endfor %}
+          </table>
+        </div>
+        <div class="item2">
+          <h1>Make that money!!</h1>
+        </div>
+        <div class="item3">
+          <form action = "{{ url_for('home') }}" method = "POST">
+           <b>Loop Information</b>
+             <br>
+             Wage:
+             <br>
+             <input type = "number" name = "wage" required />
+             <br>
+             Bags
+             <br>
+             <input type = "number" name = "bags" required />
+             <br>
+
+             <input type = "submit" value = "submit" /><br>
+          </form>
+        </div>  
+        <div class="item4">Total Bags</div>
+        <div class="item5">Total Wages</div>
+        <div class="item6">Avg. Bag Fee</div>
+        <div class="item7">{{ tot_bags }}</div>
+        <div class="item8">{{ tot_wages }}</div>  
+        <div class="item9">{{ avg_wage }}</div>  
+      </div>
+
+  </body>
+</html>
