@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, flash
 import sqlite3 as sql
 from datetime import datetime as dt
 
@@ -15,13 +15,18 @@ def home():
         try:
             wage = request.form['wage']
             bags = request.form['bags']
-            print(wage, type(wage), bags, type(bags))
-
-            with sql.connect(f"{HOME}/database.db") as con:
-                cur = con.cursor()
-                cur.execute("INSERT INTO loops (date, wage,bags) VALUES (?,?,?)", (date,wage,bags))
-                con.commit()
-                context["msg"] = "Record successfully added"
+            pw = request.form['pw']
+            if pw == "47":
+               
+            # import pdb
+            # pdb.set_trace()
+                with sql.connect(f"{HOME}/database.db") as con:
+                    cur = con.cursor()
+                    cur.execute("INSERT INTO loops (date, wage,bags) VALUES (?,?,?)", (date,wage,bags))
+                    con.commit()
+                    context["msg"] = "Record successfully added"
+            else:
+                context["msg"] = "PW incorrect"
         except:
             con.rollback()
             context["msg"] = "error in insert operation"
@@ -51,8 +56,6 @@ def home():
         "user": session
         })
     # print(context)
-    # import pdb
-    # pdb.set_trace()
 
     con.close()
     return render_template("home.html", **context)

@@ -38,6 +38,10 @@
              <br>
              <input type = "number" name = "bags" required />
              <br>
+             PW
+             <br>
+             <input type = "number" name = "pw" required />
+             <br>
 
              <input type = "submit" value = "submit" /><br>
           </form>
@@ -49,6 +53,11 @@
         <div class="item8">{{ tot_wages }}</div>  
         <div class="item9">{{ avg_wage }}</div>  
       </div>
+        <div id="hideMe" class="alert">
+          <h1>
+            {{ msg }}
+          </h1>
+        </div>  
 
   </body>
 </html>

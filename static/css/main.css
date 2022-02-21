@@ -12,3 +12,20 @@
   padding: 20px 0;
   font-size: 30px;
 }
+
+.alert {
+    background-color: #E7745B;
+    text-align: center;
+}
+#hideMe{
+  animation: hideAnimation 0s ease-in 5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes hideAnimation {
+  to {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+}
