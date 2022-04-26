@@ -35,11 +35,11 @@ def home():
 
     find_all_wages = "select sum(wage) from loops"
     cursor.execute(find_all_wages)
-    tot_wages = int(cursor.fetchone()[0])
+    tot_wages = cursor.fetchone()[0]
 
     find_all_bags = "select sum(bags) from loops"
     cursor.execute(find_all_bags)
-    tot_bags = int(cursor.fetchone()[0])
+    tot_bags = cursor.fetchone()[0]
 
     avg_wage=round((tot_wages/tot_bags), 2)
 
@@ -51,7 +51,7 @@ def home():
     context.update({
         "rows":rows,
         "tot_bags":tot_bags,
-        "tot_wages":tot_wages,
+        "tot_wages":f"${tot_wages:,}",
         "avg_wage":avg_wage,
         "user": session
         })
