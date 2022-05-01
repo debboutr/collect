@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>months</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script type="text/css">
+    </script>
+  </head>
+  <body>
+    <div class="grid-container">
+      {% for row in rows %}
+        <div class="item1">
+          <table>
+           <tr>
+            <td colspan="2">
+              <h3>
+                {{ months[row["Month"]] }}
+              </h3>
+            </td>
+           </tr>
+           <tr>
+            <td>
+              <b>Wages</b>
+            </td>
+            <td>
+              <b>Bags</b>
+            </td>
+           </tr>
+           <tr>
+            <td>{{ row["wages"] }}</td>
+            <td>{{ row["bags"] }}</td>
+           </tr>
+          </table>
+        </div>
+      {% endfor %}
+    </div>
+    <a href="{{ url_for('home') }}">
+      <button type="button">
+        <b>Home</b>
+      </button>
+    </a>
+  </body>
+</html>

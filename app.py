@@ -60,5 +60,49 @@ def home():
     con.close()
     return render_template("home.html", **context)
 
+@app.route('/months', methods=['GET'])
+def months():
+    HOME = str(Path(os.getcwd()).parent / "data")
+    context = dict()
+    con = sql.connect(f"{HOME}/database.db")
+    cursor = con.cursor()
+
+
+    con.row_factory = sql.Row
+    sum_month = """select 
+                        sum(wage) as wages, 
+                        sum(bags) as bags,
+                        substr(date, 1, 2) as Month 
+                    from 
+                        loops 
+                    group by 
+                        substr(date, 1, 2)"""
+    cur = con.cursor()
+    cur.execute(sum_month)
+    ans = cur.fetchall()
+    months = {
+            "01": "January",
+            "02": "February",
+            "03": "March",
+            "04": "April",
+            "05": "May",
+            "06": "June",
+            "07": "July",
+            "08": "August",
+            "09": "September",
+            "10": "October",
+            "11": "November",
+            "12": "December",
+            }
+    context.update({
+        "rows":ans,
+        "months": months,
+        "user": session
+        })
+
+    con.close()
+    return render_template("months.html", **context)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
