@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>monies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+
+  <body>
+    <div class="grid-container">
+      <div class="item1">
+        <a href="{{ url_for('home') }}">
+          <button type="button">
+            <b>Home</b>
+          </button>
+        </a>
+        <table>
+           <thead>
+              <td>Date</td>
+              <td>Wages</td>
+              <td>No. of bags</td>
+           </thead>
+
+           {% for row in rows %}
+              <tr>
+                 <td>{{ row["date"] }}</td>
+                 <td>{{ row["wage"] }}</td>
+                 <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
+              </tr>
+           {% endfor %}
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

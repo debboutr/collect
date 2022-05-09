@@ -12,7 +12,7 @@
         <div class="item1">
           <table>
            <tr>
-            <td colspan="2">
+            <td colspan="3">
               <h3>
                 {{ months[row["Month"]] }}
               </h3>
@@ -25,10 +25,14 @@
             <td>
               <b>Bags</b>
             </td>
+            <td>
+              <b>Days</b>
+            </td>
            </tr>
            <tr>
             <td>{{ row["wages"] }}</td>
             <td>{{ row["bags"] }}</td>
+            <td>{{ row["days"] }}</td>
            </tr>
           </table>
         </div>

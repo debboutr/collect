@@ -72,6 +72,7 @@ def months():
     sum_month = """select 
                         sum(wage) as wages, 
                         sum(bags) as bags,
+                        count(*) as days,
                         substr(date, 1, 2) as Month 
                     from 
                         loops 
@@ -103,6 +104,17 @@ def months():
     con.close()
     return render_template("months.html", **context)
 
+@app.route('/total', methods=['GET', 'POST'])
+def total():
+    HOME = str(Path(os.getcwd()).parent / "data")
+    con = sql.connect(f"{HOME}/database.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("select * from loops")
+    rows = cur.fetchall();
+    context = { "rows": rows }
+    con.close()
+    return render_template("total.html", **context)
 
 if __name__ == '__main__':
     app.run(debug=True)
