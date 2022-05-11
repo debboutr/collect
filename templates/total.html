@@ -7,14 +7,15 @@
 
   <body>
     <div class="grid-container">
+      <a href="{{ url_for('home') }}">
+        <button type="button">
+          <b>Home</b>
+        </button>
+      </a>
       <div class="item1">
-        <a href="{{ url_for('home') }}">
-          <button type="button">
-            <b>Home</b>
-          </button>
-        </a>
         <table>
            <thead>
+              <td>No.</td>
               <td>Date</td>
               <td>Wages</td>
               <td>No. of bags</td>
@@ -22,6 +23,7 @@
 
            {% for row in rows %}
               <tr>
+                 <td>{{ loop.index }}</td>
                  <td>{{ row["date"] }}</td>
                  <td>{{ row["wage"] }}</td>
                  <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
@@ -29,6 +31,11 @@
            {% endfor %}
         </table>
       </div>
+      <a href="{{ url_for('home') }}">
+        <button type="button">
+          <b>Home</b>
+        </button>
+      </a>
     </div>
   </body>
 </html>

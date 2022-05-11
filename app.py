@@ -117,4 +117,4 @@ def total():
     return render_template("total.html", **context)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
