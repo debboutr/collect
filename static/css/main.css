@@ -13,6 +13,11 @@
   font-size: 30px;
 }
 
+.bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
 .alert {
     background-color: #E7745B;
     text-align: center;
@@ -47,7 +52,8 @@ a {
     justify-content: center;
 }
 button {
-    height: 130px;
+    height: 111px;
     background-color: #4CAF50;
     font-size: 3rem;
+    border-radius: 10px;
 }

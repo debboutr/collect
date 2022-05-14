@@ -7,11 +7,13 @@
 
   <body>
     <div class="grid-container">
-      <a href="{{ url_for('home') }}">
-        <button type="button">
-          <b>Home</b>
-        </button>
-      </a>
+      <div class="item1">
+        <a href="{{ url_for('home') }}">
+          <button type="button">
+            <b>Home</b>
+          </button>
+        </a>
+      </div>
       <div class="item1">
         <table>
            <thead>
@@ -31,11 +33,13 @@
            {% endfor %}
         </table>
       </div>
-      <a href="{{ url_for('home') }}">
-        <button type="button">
-          <b>Home</b>
-        </button>
-      </a>
+      <div class="bottom">
+        <a href="{{ url_for('home') }}">
+          <button type="button">
+            <b>Home</b>
+          </button>
+        </a>
+      </div>
     </div>
   </body>
 </html>

@@ -11,16 +11,17 @@ app = Flask(__name__)
 def home():
     HOME = str(Path(os.getcwd()).parent / "data")
     context = dict()
+    last_year = dt(2021, 12, 31, 4, 20, 47)
+    total_days = (dt.now() - last_year).days
     if request.method == "POST":
         date = dt.now().strftime("%m-%d")
         try:
+            day = request.form["day"]
             wage = request.form["wage"]
             bags = request.form["bags"]
             pw = request.form["pw"]
+            date = date if day == "" else day
             if pw == "47":
-
-                # import pdb
-                # pdb.set_trace()
                 with sql.connect(f"{HOME}/database.db") as con:
                     cur = con.cursor()
                     cur.execute(
@@ -37,15 +38,15 @@ def home():
     con = sql.connect(f"{HOME}/database.db")
     cursor = con.cursor()
 
-    find_all_wages = "select sum(wage) from loops"
-    cursor.execute(find_all_wages)
-    tot_wages = cursor.fetchone()[0]
+    find_wages = "select sum(wage), sum(bags) from loops"
+    cursor.execute(find_wages)
+    tot_wages, tot_bags = cursor.fetchone()
 
-    find_all_bags = "select sum(bags) from loops"
-    cursor.execute(find_all_bags)
-    tot_bags = cursor.fetchone()[0]
+    find_work_days = "select count(*) from loops where bags > 0"
+    cursor.execute(find_work_days)
+    work_days = cursor.fetchone()[0]
 
-    avg_wage = round((tot_wages / tot_bags), 2)
+    avg_wage = round(tot_wages / tot_bags, 2)
 
     con.row_factory = sql.Row
 
@@ -59,6 +60,8 @@ def home():
             "tot_wages": f"${tot_wages:,}",
             "avg_wage": avg_wage,
             "user": session,
+            "total_days": total_days,
+            "work_days": work_days,
         }
     )
     con.close()
