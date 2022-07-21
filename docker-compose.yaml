@@ -5,6 +5,6 @@ services:
       container_name: collect
       command: /usr/local/bin/gunicorn -w 3 -b :5000 wsgi:app
       ports:
-        - "5000:5000"
+        - "8085:5000"
       volumes:
         - .:/app
