@@ -4,17 +4,22 @@ from pydantic import BaseModel
 
 
 class LoopBase(BaseModel):
-    date: date
     wages: float
     bags: float
 
 
 class LoopCreate(LoopBase):
+    date: date
+    pass
+
+
+class LoopUpdate(LoopBase):
     pass
 
 
 class Loop(LoopBase):
     id: int
+    date: date
     owner_id: int
 
     class Config:

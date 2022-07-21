@@ -7,6 +7,10 @@ def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 
+def get_loop(db: Session, loop_id: int):
+    return db.query(models.Loop).filter(models.Loop.id == loop_id).first()
+
+
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
@@ -38,6 +42,16 @@ def create_loop(db: Session, item: schemas.LoopCreate, user_id: int):
     db.commit()
     db.refresh(db_item)
     return db_item
+
+
+def edit_loop(db: Session, loop: schemas.LoopUpdate, loop_id: int):
+    db_loop = db.query(models.Loop).filter(models.Loop.id == loop_id).first()
+    for var, value in vars(loop).items():
+        setattr(db_loop, var, value) if value else None
+    db.add(db_loop)
+    db.commit()
+    db.refresh(db_loop)
+    return db_loop
 
 
 def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):

@@ -1,20 +1,19 @@
-import os
-from pathlib import Path
-from flask import Flask, render_template, request, session, flash
 import sqlite3 as sql
 from datetime import datetime as dt
+from pathlib import Path
+
+from flask import Flask, flash, render_template, request, session
 
 app = Flask(__name__)
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    HOME = str(Path(os.getcwd()).parent / "data")
     context = dict()
     last_year = dt(2021, 12, 31, 4, 20, 47)
     total_days = (dt.now() - last_year).days
     if request.method == "POST":
-        date = dt.now().strftime("%m-%d")
+        date = dt.now().strftime("%Y-%m-%d")
         try:
             day = request.form["day"]
             wage = request.form["wage"]
@@ -22,7 +21,7 @@ def home():
             pw = request.form["pw"]
             date = date if day == "" else day
             if pw == "47":
-                with sql.connect(f"{HOME}/database.db") as con:
+                with sql.connect("data/database.db") as con:
                     cur = con.cursor()
                     cur.execute(
                         "INSERT INTO loops (date, wage,bags) VALUES (?,?,?)",
@@ -35,7 +34,7 @@ def home():
         except:
             con.rollback()
             context["msg"] = "error in insert operation"
-    con = sql.connect(f"{HOME}/database.db")
+    con = sql.connect("data/database.db")
     cursor = con.cursor()
 
     find_wages = "select sum(wage), sum(bags) from loops"
@@ -70,9 +69,8 @@ def home():
 
 @app.route("/months", methods=["GET"])
 def months():
-    HOME = str(Path(os.getcwd()).parent / "data")
     context = dict()
-    con = sql.connect(f"{HOME}/database.db")
+    con = sql.connect("data/database.db")
     cursor = con.cursor()
 
     con.row_factory = sql.Row
@@ -80,11 +78,11 @@ def months():
                         sum(wage) as wages,
                         sum(bags) as bags,
                         count(*) as days,
-                        substr(date, 1, 2) as Month
+                        substr(date, 6, 2) as Month
                     from
                         loops
                     group by
-                        substr(date, 1, 2)"""
+                        substr(date, 6, 2)"""
     cur = con.cursor()
     cur.execute(sum_month)
     ans = cur.fetchall()
@@ -110,8 +108,7 @@ def months():
 
 @app.route("/total", methods=["GET", "POST"])
 def total():
-    HOME = str(Path(os.getcwd()).parent / "data")
-    con = sql.connect(f"{HOME}/database.db")
+    con = sql.connect("data/database.db")
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from loops")

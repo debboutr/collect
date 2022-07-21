@@ -47,6 +47,11 @@ def create_item_for_user(
     return crud.create_user_item(db=db, item=item, user_id=user_id)
 
 
+@app.patch("/loops/{loop_id}/edit/", response_model=schemas.Loop)
+def edit_loop(loop_id: int, loop: schemas.LoopUpdate, db: Session = Depends(get_db)):
+    return crud.edit_loop(db=db, loop=loop, loop_id=loop_id)
+
+
 @app.post("/loops/{user_id}/loops/", response_model=schemas.Loop)
 def create_loop(user_id: int, item: schemas.LoopCreate, db: Session = Depends(get_db)):
     return crud.create_loop(db=db, item=item, user_id=user_id)
