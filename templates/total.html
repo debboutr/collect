@@ -29,6 +29,9 @@
                  <td>{{ row["date"] }}</td>
                  <td>{{ row["wage"] }}</td>
                  <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
+								 <td>
+									<a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
+								</td>
               </tr>
            {% endfor %}
         </table>

@@ -67,6 +67,48 @@ def home():
     return render_template("home.html", **context)
 
 
+@app.route("/edit/<num>", methods=["GET", "POST"])
+def edit(num):
+
+    context = dict()
+
+    if request.method == "POST":
+        # date = dt.now().strftime("%Y-%m-%d")
+        try:
+            day = request.form["day"]
+            wage = request.form["wage"]
+            bags = request.form["bags"]
+            pw = request.form["pw"]
+            print("day: ", day)
+            if pw == "47":
+                with sql.connect("data/database.db") as con:
+                    cur = con.cursor()
+                    cur.execute(
+                        f"UPDATE loops SET date='{day}', wage={wage}, bags={bags} WHERE id={num}",
+                    )
+                    con.commit()
+                    context["msg"] = "Record successfully updated"
+            else:
+                context["msg"] = "PW incorrect"
+        except:
+            con.rollback()
+            context["msg"] = "error in insert operation"
+    con = sql.connect("data/database.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute(f"select * from loops where id={num}")
+    row = cur.fetchone()
+
+    context.update(
+        {
+            "row": row,
+            "user": session,
+        }
+    )
+    con.close()
+    return render_template("edit.html", **context)
+
+
 @app.route("/months", methods=["GET"])
 def months():
     context = dict()
