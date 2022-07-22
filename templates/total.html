@@ -25,12 +25,18 @@
 
            {% for row in rows %}
               <tr>
-                 <td>{{ loop.index }}</td>
+                 <td>{{ row["id"] }}</td>
                  <td>{{ row["date"] }}</td>
-                 <td>{{ row["wage"] }}</td>
+                 <td>{{ row["wage"] | round | int }}</td>
                  <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
 								 <td>
 									<a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
+								</td>
+								 <td>
+										<form action = "{{ url_for('delete', num=row["id"]) }}" method = "POST">
+											 <input class="danger" onclick="return confirm('are you sure?')" type = "submit" value = "X" /><br>
+										</form>
+
 								</td>
               </tr>
            {% endfor %}

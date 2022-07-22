@@ -74,3 +74,9 @@ input {
   margin-left: 10px;
   margin-bottom: 2px;
 }
+
+.danger {
+	background-color: red;
+	width: 50px;
+	border-radius: 5px;
+}

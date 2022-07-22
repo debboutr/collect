@@ -16,8 +16,8 @@
            {% for row in rows %}
               <tr>
                  <td>{{ row["date"] }}</td>
-                 <td>{{ row["wage"] }}</td>
-                 <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
+                 <td>{{ row["wage"] | round | int }}</td>
+                 <td>{{ (row["bags"] | string).rstrip('.0') }}</td>
               </tr>
            {% endfor %}
         </table>
@@ -64,8 +64,8 @@
       <div class="">Days Worked</div>
       <div class="">Bags /  Wages</div>
       <div class="">Avg. Bag Fee</div>
-      <div class=""><b>{{ work_days }} / {{ total_days}}</b></div>  
-      <div class=""><b>{{ (tot_bags|string).rstrip('.0') }} / {{ tot_wages }}</b></div>  
+			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>  
+      <div class=""><b>{{ (tot_bags|string).rstrip('.0') }} / {{ "${:,.2f}".format(tot_wages) }}</b></div>  
       <div class=""><b> ${{ avg_wage  }}</b></div>  
     </div>
     <div id="hideMe" class="alert">
