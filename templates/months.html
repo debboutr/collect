@@ -30,8 +30,14 @@
             </td>
            </tr>
            <tr>
-						 <td>{{ row["wages"] | round | int }}</td>
-            <td>{{ (row["bags"] | string).rstrip('.0') }}</td>
+						<td>{{ row["wages"] | round | int }}</td>
+						<td>
+							{% if row["bags"] % 1 == 0 %}
+								{{ row["bags"] | int }}
+							{% else %}
+								{{ row["bags"] }}
+							{% endif %}
+						</td>
             <td>{{ row["days"] }}</td>
            </tr>
           </table>
