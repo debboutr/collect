@@ -65,7 +65,7 @@
       <div class="">Bags /  Wages</div>
       <div class="">Avg. Bag Fee</div>
 			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>  
-      <div class=""><b>{{ (tot_bags|string).rstrip('.0') }} / {{ "${:,.2f}".format(tot_wages) }}</b></div>  
+      <div class=""><b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b></div>  
       <div class=""><b> ${{ avg_wage  }}</b></div>  
     </div>
     <div id="hideMe" class="alert">
