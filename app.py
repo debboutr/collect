@@ -12,10 +12,11 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def home():
     context = dict()
-    last_year = dt(2021, 12, 31, 4, 20, 47)
-    total_days = (dt.now() - last_year).days
+    now = dt.now()
+    last_year = dt(now.year-1, 12, 31, 4, 20, 47)
+    total_days = (now - last_year).days
     if request.method == "POST":
-        date = dt.now().strftime("%Y-%m-%d")
+        date = now.strftime("%Y-%m-%d")
         try:
             day = request.form["day"]
             wage = request.form["wage"]
@@ -39,11 +40,17 @@ def home():
     print(DATABASE)
     con = sql.connect(DATABASE)
     cursor = con.cursor()
-    find_wages = "select sum(wage), sum(bags) from loops"
-    cursor.execute(find_wages)
+    find_wages = """select sum(wage), sum(bags)
+                    from loops
+                    where
+                        substr(date, 0, 5) = '{year}';"""
+    cursor.execute(find_wages.format(year=now.year))
     tot_wages, tot_bags = cursor.fetchone()
-    find_work_days = "select count(*) from loops where bags > 0"
-    cursor.execute(find_work_days)
+    find_work_days = """select count(*)
+                        from loops
+                        where bags > 0 and
+                        substr(date, 0, 5) = '{year}';"""
+    cursor.execute(find_work_days.format(year=now.year))
     work_days = cursor.fetchone()[0]
     avg_wage = round(tot_wages / tot_bags, 2)
     con.row_factory = sql.Row
@@ -117,8 +124,8 @@ def delete(num):
     return redirect(url_for("total"))
 
 
-@app.route("/months/<year>", methods=["GET"])
-def months(year):
+@app.route("/months", methods=["GET"])
+def months():
     context = dict()
     con = sql.connect(DATABASE)
     cursor = con.cursor()
@@ -127,16 +134,17 @@ def months(year):
                         sum(wage) as wages,
                         sum(bags) as bags,
                         count(*) as days,
+                        substr(date, 0, 5) Year,
                         substr(date, 6, 2) as Month
                     from
                         loops
-                    where
-                        substr(date, 0, 5) = '{year}'
                     group by
-                        substr(date, 6, 2)"""
+                        Year,
+                        Month
+                    order by
+                        Year desc;"""
     cur = con.cursor()
-    print(sum_month.format(year=year))
-    cur.execute(sum_month.format(year=year))
+    cur.execute(sum_month)
     ans = cur.fetchall()
     months = {
         "01": "January",
@@ -152,7 +160,7 @@ def months(year):
         "11": "November",
         "12": "December",
     }
-    print(ans)
+    #breakpoint()
     context.update({"rows": ans, "months": months, "user": session})
     con.close()
     return render_template("months.html", **context)

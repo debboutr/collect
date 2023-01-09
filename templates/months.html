@@ -9,16 +9,16 @@
   <body>
     <div class="grid-container">
       {% for row in rows %}
-        <div class="item1">
-          <table>
-           <tr>
+      <div class="">
+        <table>
+          <tr>
             <td colspan="3">
               <h3>
                 {{ months[row["Month"]] }}
               </h3>
             </td>
-           </tr>
-           <tr>
+          </tr>
+          <tr>
             <td>
               <b>Wages</b>
             </td>
@@ -28,20 +28,20 @@
             <td>
               <b>Days</b>
             </td>
-           </tr>
-           <tr>
-						<td>{{ row["wages"] | round | int }}</td>
-						<td>
-							{% if row["bags"] % 1 == 0 %}
-								{{ row["bags"] | int }}
-							{% else %}
-								{{ row["bags"] }}
-							{% endif %}
-						</td>
+          </tr>
+          <tr>
+            <td>{{ row["wages"] | round | int }}</td>
+            <td>
+              {% if row["bags"] % 1 == 0 %}
+              {{ row["bags"] | int }}
+              {% else %}
+              {{ row["bags"] }}
+              {% endif %}
+            </td>
             <td>{{ row["days"] }}</td>
-           </tr>
-          </table>
-        </div>
+          </tr>
+        </table>
+      </div>
       {% endfor %}
     </div>
     <a href="{{ url_for('home') }}">

@@ -13,11 +13,6 @@
   font-size: 30px;
 }
 
-.bottom {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-}
 .alert {
     background-color: #E7745B;
     text-align: center;
