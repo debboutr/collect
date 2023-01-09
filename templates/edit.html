@@ -7,41 +7,41 @@
   <body>
     <div class="grid-container">
       <div class="">
-				<form action = "{{ url_for('edit', num=row["id"]) }}" method = "POST">
-         <h3>Loop Information</h3>
-            <div>
-             <label>Date:</label>
-						 <input value={{row["date"]}} type = "text" name = "day" placeholder="use only if not today MM-DD" />
-            </div>
-           <div>
-             <label>Wage:</label>
-             <input value={{row["wage"]}} type = "number" name = "wage" required />
-           </div>
-           <div>
-             <label>Bags:</label>
-             <input value={{row["bags"]}} type = "number" step = "0.5" name = "bags" required />
-           </div>
-           <div>
-             <label>PW:</label>
-             <input type = "number" name = "pw" required />
-           </div>
+        <form action = "{{ url_for('edit', num=row["id"]) }}" method = "POST">
+          <h3>Loop Information</h3>
+          <div>
+            <label>Date:</label>
+            <input value={{row["date"]}} type = "text" name = "day" placeholder="use only if not today MM-DD" />
+          </div>
+          <div>
+            <label>Wage:</label>
+            <input value={{row["wage"]}} type = "number" name = "wage" required />
+          </div>
+          <div>
+            <label>Bags:</label>
+            <input value={{row["bags"]}} type = "number" step = "0.5" name = "bags" required />
+          </div>
+          <div>
+            <label>PW:</label>
+            <input type = "number" name = "pw" required />
+          </div>
 
-           <input type = "submit" value = "submit" /><br>
+          <input type = "submit" value = "submit" /><br>
         </form>
-      </div>  
+      </div>
     </div>
     <div id="hideMe" class="alert">
       <h1>
         {{ msg }}
       </h1>
     </div>
-		<div class="item1">
-			<a href="{{ url_for('total') }}">
-				<button type="button">
-					<b>Total</b>
-				</button>
-			</a>
-		</div>
+    <div class="item1">
+      <a href="{{ url_for('total') }}">
+        <button type="button">
+          <b>Total</b>
+        </button>
+      </a>
+    </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>

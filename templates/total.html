@@ -16,33 +16,33 @@
       </div>
       <div class="item1">
         <table>
-           <thead>
-              <td>No.</td>
-              <td>Date</td>
-              <td>Wages</td>
-              <td>No. of bags</td>
-           </thead>
+          <thead>
+            <td>No.</td>
+            <td>Date</td>
+            <td>Wages</td>
+            <td>No. of bags</td>
+          </thead>
 
-           {% for row in rows %}
-              <tr>
-                 <td>{{ row["id"] }}</td>
-                 <td>{{ row["date"] }}</td>
-                 <td>{{ row["wage"] | round | int }}</td>
-                 <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
-								 <td>
-									<a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
-								</td>
-								 <td>
-										<form action = "{{ url_for('delete', num=row["id"]) }}" method = "POST">
-											 <input class="danger" onclick="return confirm('are you sure?')" type = "submit" value = "X" /><br>
-										</form>
+          {% for row in rows %}
+          <tr>
+            <td>{{ row["id"] }}</td>
+            <td>{{ row["date"] }}</td>
+            <td>{{ row["wage"] | round | int }}</td>
+            <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
+            <td>
+              <a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
+            </td>
+            <td>
+              <form action = "{{ url_for('delete', num=row["id"]) }}" method = "POST">
+                <input class="danger" onclick="return confirm('are you sure?')" type = "submit" value = "X" /><br>
+              </form>
 
-								</td>
-              </tr>
-           {% endfor %}
+            </td>
+          </tr>
+          {% endfor %}
         </table>
       </div>
-      <div class="bottom">
+      <div class="">
         <a href="{{ url_for('home') }}">
           <button type="button">
             <b>Home</b>
