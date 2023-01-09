@@ -36,6 +36,7 @@ def home():
         except:
             con.rollback()
             context["msg"] = "error in insert operation"
+    print(DATABASE)
     con = sql.connect(DATABASE)
     cursor = con.cursor()
     find_wages = "select sum(wage), sum(bags) from loops"
@@ -116,8 +117,8 @@ def delete(num):
     return redirect(url_for("total"))
 
 
-@app.route("/months", methods=["GET"])
-def months():
+@app.route("/months/<year>", methods=["GET"])
+def months(year):
     context = dict()
     con = sql.connect(DATABASE)
     cursor = con.cursor()
@@ -129,10 +130,13 @@ def months():
                         substr(date, 6, 2) as Month
                     from
                         loops
+                    where
+                        substr(date, 0, 5) = '{year}'
                     group by
                         substr(date, 6, 2)"""
     cur = con.cursor()
-    cur.execute(sum_month)
+    print(sum_month.format(year=year))
+    cur.execute(sum_month.format(year=year))
     ans = cur.fetchall()
     months = {
         "01": "January",
@@ -148,6 +152,7 @@ def months():
         "11": "November",
         "12": "December",
     }
+    print(ans)
     context.update({"rows": ans, "months": months, "user": session})
     con.close()
     return render_template("months.html", **context)

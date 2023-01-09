@@ -24,7 +24,7 @@
       </div>
       <div class="">
         <h1>Caddy Stats</h1>
-        <a href="{{ url_for('months') }}">
+        <a href="{{ url_for('months', year=2022) }}">
           <button type="button">
             <b>Months</b>
           </button>
@@ -60,19 +60,19 @@
 
            <input type = "submit" value = "submit" /><br>
         </form>
-      </div>  
+      </div>
       <div class="">Days Worked</div>
       <div class="">Bags /  Wages</div>
       <div class="">Avg. Bag Fee</div>
-			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>  
-      <div class=""><b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b></div>  
-      <div class=""><b> ${{ avg_wage  }}</b></div>  
+			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>
+      <div class=""><b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b></div>
+      <div class=""><b> ${{ avg_wage  }}</b></div>
     </div>
     <div id="hideMe" class="alert">
       <h1>
         {{ msg }}
       </h1>
-    </div>  
+    </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>
