@@ -43,14 +43,14 @@ def home():
     find_wages = """select sum(wage), sum(bags)
                     from loops
                     where
-                        substr(date, 0, 5) = '{year}';"""
-    cursor.execute(find_wages.format(year=now.year))
+                        substr(date, 0, 5) = '{}';"""
+    cursor.execute(find_wages.format(now.year))
     tot_wages, tot_bags = cursor.fetchone()
     find_work_days = """select count(*)
                         from loops
                         where bags > 0 and
-                        substr(date, 0, 5) = '{year}';"""
-    cursor.execute(find_work_days.format(year=now.year))
+                        substr(date, 0, 5) = '{}';"""
+    cursor.execute(find_work_days.format(now.year))
     work_days = cursor.fetchone()[0]
     avg_wage = round(tot_wages / tot_bags, 2)
     con.row_factory = sql.Row
