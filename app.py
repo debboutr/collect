@@ -37,7 +37,6 @@ def home():
         except:
             con.rollback()
             context["msg"] = "error in insert operation"
-    print(DATABASE)
     con = sql.connect(DATABASE)
     cursor = con.cursor()
     find_wages = """select sum(wage), sum(bags)
@@ -46,7 +45,6 @@ def home():
                         substr(date, 0, 5) = '{}';"""
     cursor.execute(find_wages.format(now.year))
     tot_wages, tot_bags = cursor.fetchone()
-    print(f"{tot_wages=}, {tot_bags=}")
     tot_wages = tot_wages if tot_wages else 0
     tot_bags = tot_bags if tot_bags else 0.47
     avg_wage = round(tot_wages / tot_bags, 2)
