@@ -169,6 +169,23 @@ def months():
     return render_template("months.html", **context)
 
 
+@app.route("/month/<year>/<month>", methods=["GET"])
+def month_detail(year, month):
+    con = sql.connect(DATABASE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    month_data = """select * from loops
+                    where
+                        substr(date, 0, 5) = '{}'
+                    and
+                        substr(date, 6, 2) = '{}';"""
+    cur.execute(month_data.format(year, month))
+    rows = cur.fetchall()
+    context = {"rows": rows}
+    con.close()
+    return render_template("total.html", **context)
+
+
 @app.route("/total", methods=["GET", "POST"])
 def total():
     con = sql.connect(DATABASE)

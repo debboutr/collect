@@ -13,9 +13,11 @@
         <table>
           <tr>
             <td colspan="3">
+              <a href="{{ url_for('month_detail', year=row['Year'], month=row['Month']) }}">
               <h3>
                 {{ months[row["Month"]] }}
               </h3>
+              </a>
             </td>
           </tr>
           <tr>
