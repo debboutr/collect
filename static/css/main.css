@@ -4,6 +4,9 @@
   gap: 10px;
   background-color: #5ec37f;
   padding: 10px;
+  grid-template-areas: "map map a"
+						"b c d"
+						"e f g";
 }
 
 .grid-container > div {
@@ -22,6 +25,10 @@
     background-color: #E7745B;
     text-align: center;
 }
+ .map {
+	grid-area: map;
+	height: 420px;
+ }
 
 #hideMe{
   animation: hideAnimation 0s ease-in 5s;
@@ -47,7 +54,7 @@ tr {
     border-width: 1px 0;
 }
 
-a {
+.anchor {
     margin-top: 24px;
     display: flex;
     justify-content: center;

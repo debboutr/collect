@@ -3,9 +3,32 @@
   <head>
     <title>monies</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+		<link rel="stylesheet"
+		href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+		crossorigin=""/>
+
+		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+			integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+			crossorigin=""></script>
+
   </head>
   <body>
     <div class="grid-container">
+			<div id="map" class="map"></div>
+      <div class="map"></div>
+      <div>
+        <form action = "{{ url_for('home') }}" method = "POST">
+					<input type=number id="lat" name="latitude" step=any required />
+					<br>
+					<input type=number id="lon" name="longitude" step=any required />
+					<br>
+					<input type="text" name="guest" placeholder="Add the guest name/s" required />
+					<br>
+				  <input type="submit" value="submit" /><br>
+				</form>
+			</div>
       <div class="">
         <table>
            <thead>
@@ -24,18 +47,18 @@
       </div>
       <div class="">
         <h1>Caddy Stats</h1>
-        <a href="{{ url_for('months') }}">
+        <a class="anchor" href="{{ url_for('months') }}">
           <button type="button">
             <b>Months</b>
           </button>
         </a>
-        <a href="{{ url_for('total') }}">
+        <a class="anchor" href="{{ url_for('total') }}">
           <button type="button">
             <b>Total</b>
           </button>
         </a>
       </div>
-      <div class="">
+      <div>
         <form action = "{{ url_for('home') }}" method = "POST">
          <h3>Loop Information</h3>
             <button id="dbtn" type="button">
@@ -43,36 +66,89 @@
             </button>
             <div id="dbox" style="display: none;">
              <label>Date:</label>
-              <input type = "text" name = "day" placeholder="use only if not today MM-DD" />
+              <input type="text" name="day" placeholder="use only if not today MM-DD" />
             </div>
            <div>
              <label>Wage:</label>
-             <input type = "number" name = "wage" required />
+             <input type="number" name="wage" required />
            </div>
            <div>
              <label>Bags:</label>
-             <input type = "number" step = "0.5" name = "bags" required />
+             <input type="number" step="0.5" name="bags" required />
            </div>
            <div>
              <label>PW:</label>
-             <input type = "number" name = "pw" required />
+             <input type="number" name="pw" required />
            </div>
-
-           <input type = "submit" value = "submit" /><br>
+           <input type="submit" value="submit" /><br>
         </form>
-      </div>  
-      <div class="">Days Worked</div>
-      <div class="">Bags /  Wages</div>
-      <div class="">Avg. Bag Fee</div>
-			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>  
-      <div class=""><b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b></div>  
-      <div class=""><b> ${{ avg_wage  }}</b></div>  
+      </div>
+			<div>
+				<h3>Days Worked</h3>
+				<b>{{ work_days }} / {{ total_days}}</b>
+			</div>
+      <div>
+				<h3>Bags /  Wages</h3>
+				<b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b>
+			</div>
+      <div>
+				<h3>Avg. Bag Fee</h3>
+				<b> ${{ avg_wage  }}</b>
+			</div>
     </div>
     <div id="hideMe" class="alert">
       <h1>
         {{ msg }}
       </h1>
-    </div>  
+    </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+		<script>
+			var map = L.map('map', {attributionControl:
+							false}).setView([39.833, -98.583], 4);
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 19,
+			}).addTo(map);
+
+			{% for location in locations %}
+				var circle = L.circleMarker(["{{ location['lat'] }}", "{{ location['lon'] }}"], {
+								color: 'red',
+								fillColor: '#f03',
+								fillOpacity: 0.5,
+								radius: 4
+							}).addTo(map);
+				circle.bindPopup(
+								"<strong>" +
+								"{{ location['guest'] }}" +
+								"</strong>" + "<br>" +
+								"{{ location['date'] }}"
+							)
+        circle.on('mouseover', function (e) {
+            this.openPopup();
+        });
+        circle.on('mouseout', function (e) {
+            this.closePopup();
+        });
+			{% endfor %}
+			var marker;
+
+			function updateLatlng(e) {
+				var point = e.target._latlng
+				document.getElementById('lat').value = point.lat;
+				document.getElementById('lon').value = point.lng;
+				marker.bindPopup("<strong>" + point.lng + "</strong>")
+			}
+			function mapClicked(e) {
+					map.off('click', mapClicked);
+					marker = new L.Marker(e.latlng, { draggable: true });
+					marker.bindPopup("<strong>" + e.latlng.lng + "</strong>").addTo(map);
+					marker.on('dragend', updateLatlng);
+					document.getElementById('lat').value = e.latlng.lat;
+					document.getElementById('lon').value = e.latlng.lng;
+			}
+			map.on('click', mapClicked);
+
+		</script>
+
   </body>
 </html>

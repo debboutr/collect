@@ -16,26 +16,39 @@ def home():
     total_days = (dt.now() - last_year).days
     if request.method == "POST":
         date = dt.now().strftime("%Y-%m-%d")
-        try:
-            day = request.form["day"]
-            wage = request.form["wage"]
-            bags = request.form["bags"]
-            pw = request.form["pw"]
-            date = date if day == "" else day
-            if pw == "47":
-                with sql.connect(DATABASE) as con:
-                    cur = con.cursor()
-                    cur.execute(
-                        "INSERT INTO loops (date, wage,bags) VALUES (?,?,?)",
-                        (date, wage, bags),
-                    )
-                    con.commit()
-                    context["msg"] = "Record successfully added"
-            else:
-                context["msg"] = "PW incorrect"
-        except:
-            con.rollback()
-            context["msg"] = "error in insert operation"
+        if "latitude" in request.form:
+            print(dir(request))
+            guest = request.form["guest"]
+            lat = request.form["latitude"]
+            lon = request.form["longitude"]
+            with sql.connect(DATABASE) as con:
+                cur = con.cursor()
+                cur.execute(
+                    "INSERT INTO groups (date, guest, lat, lon) VALUES (?,?,?,?)",
+                    (date, guest, lat, lon),
+                )
+                con.commit()
+        if "bags" in request.form:
+            try:
+                day = request.form["day"]
+                wage = request.form["wage"]
+                bags = request.form["bags"]
+                pw = request.form["pw"]
+                date = date if day == "" else day
+                if pw == "47":
+                    with sql.connect(DATABASE) as con:
+                        cur = con.cursor()
+                        cur.execute(
+                            "INSERT INTO loops (date, wage,bags) VALUES (?,?,?)",
+                            (date, wage, bags),
+                        )
+                        con.commit()
+                        context["msg"] = "Record successfully added"
+                else:
+                    context["msg"] = "PW incorrect"
+            except:
+                con.rollback()
+                context["msg"] = "error in insert operation"
     con = sql.connect(DATABASE)
     cursor = con.cursor()
     find_wages = "select sum(wage), sum(bags) from loops"
@@ -49,9 +62,13 @@ def home():
     cur = con.cursor()
     cur.execute("select * from loops")
     rows = cur.fetchall()[-5:]
+    cur = con.cursor()
+    cur.execute("select * from groups")
+    locations = cur.fetchall()
     context.update(
         {
             "rows": rows,
+            "locations": locations,
             "tot_bags": tot_bags,
             "tot_wages": tot_wages,
             "avg_wage": avg_wage,
