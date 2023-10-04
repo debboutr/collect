@@ -1,20 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <title>monies</title>
+    <title>Monthly Breakdown</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
 
   <body>
     <div class="grid-container">
-      <div class="item1">
-        <a href="{{ url_for('months') }}">
-          <button type="button">
-            <b>Months</b>
-          </button>
-        </a>
+      <div class="">
+        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
+          <b>Months</b>
+        </button>
       </div>
-      <div class="item1">
+      <div class="">
         <table>
           <thead>
             <td>No.</td>
@@ -43,11 +41,9 @@
         </table>
       </div>
       <div class="">
-        <a href="{{ url_for('home') }}">
-          <button type="button">
-            <b>Home</b>
-          </button>
-        </a>
+        <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
+          <b>Home</b>
+        </button>
       </div>
     </div>
   </body>

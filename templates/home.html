@@ -24,50 +24,25 @@
       </div>
       <div class="">
         <h1>Caddy Stats</h1>
-        <a href="{{ url_for('months' ) }}">
-          <button type="button">
-            <b>Months</b>
-          </button>
-        </a>
-        <a href="{{ url_for('total') }}">
-          <button type="button">
-            <b>Total</b>
-          </button>
-        </a>
-        {{ rows[-1]["date"][:4] }}
+        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
+          <b>Months</b>
+        </button>
+        <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
+          <b>Total</b>
+        </button>
+        <h3>{{ year }}</h3>
+        <button type="button" onclick="window.location.href='{{ url_for('edit', num="new") }}';">
+          <b>+</b>
+        </button>
+        <button type="button" onclick="window.location.href='{{ url_for('create_group') }}';">
+          <b>iiii</b>
+        </button>
       </div>
-      <div class="">
-        <form action = "{{ url_for('home') }}" method = "POST">
-         <h3>Loop Information</h3>
-            <button id="dbtn" type="button">
-              Add Date
-            </button>
-            <div id="dbox" style="display: none;">
-             <label>Date:</label>
-              <input type = "text" name = "day" placeholder="use only if not today MM-DD" />
-            </div>
-           <div>
-             <label>Wage:</label>
-             <input type = "number" name = "wage" required />
-           </div>
-           <div>
-             <label>Bags:</label>
-             <input type = "number" step = "0.5" name = "bags" required />
-           </div>
-           <div>
-             <label>PW:</label>
-             <input type = "number" name = "pw" required />
-           </div>
-
-           <input type = "submit" value = "submit" /><br>
-        </form>
+      <div class="grid-side">
+        <div>Days Worked<br>{{ work_days }} / {{ total_days}}</div>
+        <div>Bags /  Wages<br>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</div>
+        <div>Avg. Bag Fee<br>${{ avg_wage  }}</div>
       </div>
-      <div class="">Days Worked</div>
-      <div class="">Bags /  Wages</div>
-      <div class="">Avg. Bag Fee</div>
-			<div class=""><b>{{ work_days }} / {{ total_days}}</b></div>
-      <div class=""><b>{{ tot_bags | int }} / {{ "${:,.0f}".format(tot_wages) }}</b></div>
-      <div class=""><b> ${{ avg_wage  }}</b></div>
     </div>
     <div id="hideMe" class="alert">
       <h1>

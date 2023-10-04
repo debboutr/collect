@@ -1,5 +1,6 @@
 import sqlite3 as sql
 from datetime import datetime as dt
+from datetime import timedelta
 from pathlib import Path
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
@@ -9,34 +10,12 @@ DATABASE = Path(__file__).parent / "data/database.db"
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def home():
     context = dict()
     now = dt.now()
     last_year = dt(now.year-1, 12, 31, 4, 20, 47)
     total_days = (now - last_year).days
-    if request.method == "POST":
-        date = now.strftime("%Y-%m-%d")
-        try:
-            day = request.form["day"]
-            wage = request.form["wage"]
-            bags = request.form["bags"]
-            pw = request.form["pw"]
-            date = date if day == "" else day
-            if pw == "47":
-                with sql.connect(DATABASE) as con:
-                    cur = con.cursor()
-                    cur.execute(
-                        "INSERT INTO loops (date, wage,bags) VALUES (?,?,?)",
-                        (date, wage, bags),
-                    )
-                    con.commit()
-                    context["msg"] = "Record successfully added"
-            else:
-                context["msg"] = "PW incorrect"
-        except:
-            con.rollback()
-            context["msg"] = "error in insert operation"
     con = sql.connect(DATABASE)
     cursor = con.cursor()
     find_wages = """select sum(wage), sum(bags)
@@ -69,6 +48,7 @@ def home():
             "user": session,
             "total_days": total_days,
             "work_days": work_days,
+            "year": dt.now().year,
         }
     )
     con.close()
@@ -87,9 +67,15 @@ def edit(num):
             if pw == "47":
                 with sql.connect(DATABASE) as con:
                     cur = con.cursor()
-                    cur.execute(
-                        f"UPDATE loops SET date='{day}', wage={wage}, bags={bags} WHERE id={num}",
-                    )
+                    if num == "new":
+                        cur.execute(
+                            "INSERT INTO loops (date, wage,bags) VALUES (?,?,?)",
+                            (day, wage, bags),
+                        )
+                    else:
+                        cur.execute(
+                            f"UPDATE loops SET date='{day}', wage={wage}, bags={bags} WHERE id={num}",
+                        )
                     con.commit()
                     context["msg"] = "Record successfully updated"
             else:
@@ -97,18 +83,22 @@ def edit(num):
         except:
             con.rollback()
             context["msg"] = "error in update operation"
-    con = sql.connect(DATABASE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute(f"select * from loops where id={num}")
-    row = cur.fetchone()
+    if num == "new":
+        now = dt.now()
+        row = dict(id="new", date=now.strftime("%Y-%m-%d"), wage=None, bags=None, owner_id=1)
+    else:
+        con = sql.connect(DATABASE)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute(f"select * from loops where id={num}")
+        row = cur.fetchone()
+        con.close()
     context.update(
         {
             "row": row,
             "user": session,
         }
     )
-    con.close()
     return render_template("edit.html", **context)
 
 
@@ -186,8 +176,20 @@ def month_detail(year, month):
     return render_template("total.html", **context)
 
 
-@app.route("/total", methods=["GET", "POST"])
+@app.route("/total", methods=["GET"])
 def total():
+    con = sql.connect(DATABASE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("select * from loops order by date desc")
+    rows = cur.fetchall()
+    context = {"rows": rows}
+    con.close()
+    return render_template("total.html", **context)
+
+
+@app.route("/group", methods=["GET", "POST"])
+def create_group():
     con = sql.connect(DATABASE)
     con.row_factory = sql.Row
     cur = con.cursor()

@@ -12,3 +12,8 @@ breakpoints.
 `docker attach collect`
 
  and you will be placed in the debugger.
+
+ ADDITIONS:
+[ ]  table for group
+[ ]  table for people, ultimately lat lon 
+[ ]  separate years/months on months URL
