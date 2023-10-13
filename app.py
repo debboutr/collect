@@ -3,7 +3,8 @@ from datetime import datetime as dt
 from datetime import timedelta
 from pathlib import Path
 
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import (Flask, flash, redirect, render_template, request, session,
+                   url_for)
 
 DATABASE = Path(__file__).parent / "data/database.db"
 
@@ -14,7 +15,7 @@ app = Flask(__name__)
 def home():
     context = dict()
     now = dt.now()
-    last_year = dt(now.year-1, 12, 31, 4, 20, 47)
+    last_year = dt(now.year - 1, 12, 31, 4, 20, 47)
     total_days = (now - last_year).days
     con = sql.connect(DATABASE)
     cursor = con.cursor()
@@ -93,7 +94,13 @@ def edit(num):
             cur.execute(f"select * from groups order by group_id desc limit 5")
             group = cur.fetchall()
             now = dt.now()
-            row = dict(id="new", date=now.strftime("%Y-%m-%d"), wage=None, bags=None, owner_id=1)
+            row = dict(
+                id="new",
+                date=now.strftime("%Y-%m-%d"),
+                wage=None,
+                bags=None,
+                owner_id=1,
+            )
         else:
             find_group = """select id, date, wage, bags, loops.group_id, name
                             from loops
@@ -201,7 +208,7 @@ def total():
     return render_template("total.html", **context)
 
 
-@app.route("/group/<num>", methods=["GET", "POST"]) 
+@app.route("/group/<num>", methods=["GET", "POST"])
 def create_group(num):
     context = dict()
     if request.method == "POST":
@@ -213,9 +220,12 @@ def create_group(num):
                 with sql.connect(DATABASE) as con:
                     cur = con.cursor()
                     if num == "new":
-                        out = cur.execute("INSERT INTO groups (name) VALUES (?)", (last_name,))
-                        cur.execute("INSERT INTO people (first_name, last_name, notes, group_id) VALUES (?,?,?,?)",
-                        (first_name, last_name, "", out.lastrowid),
+                        out = cur.execute(
+                            "INSERT INTO groups (name) VALUES (?)", (last_name,)
+                        )
+                        cur.execute(
+                            "INSERT INTO people (first_name, last_name, notes, group_id) VALUES (?,?,?,?)",
+                            (first_name, last_name, "", out.lastrowid),
                         )
                         con.commit()
                         return redirect(url_for("home"))
@@ -233,7 +243,9 @@ def create_group(num):
             context["msg"] = "error in update operation"
     if num == "new":
         now = dt.now()
-        row = dict(id="new", date=now.strftime("%Y-%m-%d"), wage=None, bags=None, owner_id=1)
+        row = dict(
+            id="new", date=now.strftime("%Y-%m-%d"), wage=None, bags=None, owner_id=1
+        )
         people = {}
     else:
         with sql.connect(DATABASE) as con:
@@ -254,7 +266,7 @@ def create_group(num):
     return render_template("group.html", **context)
 
 
-@app.route("/person/<num>", methods=["GET", "POST"]) 
+@app.route("/person/<num>", methods=["GET", "POST"])
 def person(num):
     context = dict()
     if request.method == "POST":
@@ -293,6 +305,6 @@ def person(num):
     )
     return render_template("person.html", **context)
 
+
 if __name__ == "__main__":
     app.run()
-
