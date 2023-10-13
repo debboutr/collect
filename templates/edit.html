@@ -16,12 +16,28 @@
           <h3>Info</h3>
             <label>Date:</label>
             <span><input value={{ row["date"] }} type="text" name="day" placeholder="use only if not today YYYY-MM-DD" /></span>
+            <br>
             <label>Wage:</label>
             <span><input value={{ row["wage"] }} type="number" name="wage" required /></span>
+            <br>
             <label>Bags:</label>
             <span><input value={{ row["bags"] }} type="number" step="0.5" name="bags" required /></span>
+            <br>
+            <label>Group:</label>
+              <select name="group" required>
+              {% if num == "new" %}
+                <option value={{ group.0["group_id"] }} selected>{{ group.0['name']}}</option>
+              {% else %}
+                <option value={{ row["group_id"] }} selected>{{ row['name']}}</option>
+              {% endif %}
+              {% for g in group[1:] %}
+                <option value={{ g["group_id"] }}>{{ g['name']}}</option>
+              {% endfor %}
+              </select>
+            <br>
             <label>PW:</label>
             <span><input type="number" name="pw" required /></span>
+            <br>
           <input class="button" type="submit" value="submit" /><br>
         </form>
       </div>

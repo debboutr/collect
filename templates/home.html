@@ -10,12 +10,18 @@
         <table>
            <thead>
               <td>Date</td>
+              <td>Group</td>
               <td>Wages</td>
               <td>No. of bags</td>
            </thead>
            {% for row in rows %}
               <tr>
-                 <td>{{ row["date"] }}</td>
+                 <td>{{ row["date"][5:] }}</td>
+                 <td>
+                   <a href="{{ url_for('create_group', num=row["group_id"]) }}">
+                     {{ row["name"] }}
+                   </a>
+                 </td>
                  <td>{{ row["wage"] | round | int }}</td>
                  <td>{{ (row["bags"] | string).rstrip('.0') }}</td>
               </tr>
@@ -34,7 +40,7 @@
         <button type="button" onclick="window.location.href='{{ url_for('edit', num="new") }}';">
           <b>+</b>
         </button>
-        <button type="button" onclick="window.location.href='{{ url_for('create_group') }}';">
+        <button type="button" onclick="window.location.href='{{ url_for('create_group', num="new") }}';">
           <b>iiii</b>
         </button>
       </div>

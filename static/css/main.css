@@ -15,6 +15,13 @@
   margin: 0px 15px 0px 15px;
 }
 
+.grid-form {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+  padding: 2.8rem;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
@@ -86,13 +93,9 @@ label {
   margin: 0px 15px 0px 15px;
   width: 100px;
   line-height: 36px;
-  float: left;
 }
 
 span {
-  margin: 20px;
-  display: block;
-  overflow: hidden;
 }
 
 input {
@@ -107,4 +110,13 @@ input {
 	background-color: red;
 	width: 50px;
 	border-radius: 5px;
+}
+
+#map {
+  height: 480px;
+  margin: 20px;
+}
+
+a.leaflet-control-zoom-out, a.leaflet-control-zoom-in {
+  margin: 0px;
 }

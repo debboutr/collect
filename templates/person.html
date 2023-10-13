@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <title>View/Edit Person</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+       crossorigin=""/>
+  </head>
+  <body>
+    <div class="grid-container">
+      <!-- COLUMN LEFT -->
+      <div> 
+        <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
+          <b>Home</b>
+        </button>
+      </div>
+      <!-- COLUMN CENTER -->
+      <div class="">
+        <form action = "{{ url_for('person', num=num) }}" method = "post">
+          <h3>{{ row["first_name"] }} {{ row["last_name"] }}</h3>
+          <div class="grid-form">
+            <input type="text" value='{{ row["first_name"] }}' name="first_name" />
+            <input type="text" value='{{ row["last_name"] }}' name="last_name" />
+          </div>
+            <textarea name="notes" rows="6" cols="100">{% if row %}{{ row['notes'] }}{% else %}{% endif %} </textarea>
+          <div class="grid-form">
+            <input type="number" placeholder="lat" step="any" name="lat" id="lat"
+              {% if row["lat"] %}
+                 value={{ row["lat"] }}
+              {% endif %}
+            />
+            <input type="number" placeholder="lon" step="any" name="lon" id="lon"
+              {% if row["lon"] %}
+                 value={{ row["lon"] }}
+              {% endif %}
+            />
+          </div>
+          <div id="map"></div>
+          <label>PW:</label>
+          <input type="number" name="pw" required />
+          <br>
+          <input class="button" type="submit" value="submit" />
+          <br>
+        </form>
+      </div>
+      <!-- COLUMN RIGHT -->
+      <div>
+        <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
+          <b>Total</b>
+        </button>
+        <br>
+        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
+          <b>Months</b>
+        </button>
+      </div>
+    </div>
+    <!-- ALERT -->
+    <div id="hideMe" class="alert">
+      <h1>
+        {{ msg }}
+      </h1>
+    </div>
+    <!-- JAVASCRIPT -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+       crossorigin=""></script>
+    <script>
+
+      var map = L.map('map').setView([39.8333, -98.5833], 4);
+
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: ''
+      }).addTo(map);
+
+      document.getElementsByClassName( 'leaflet-control-attribution' )[0].style.display = 'none';
+      function onMapClick(e) {
+          L.circleMarker(e.latlng, {
+            color: '#f07300',
+            fillOpacity: 0.3,
+            opacity: 0.8,
+            radius: 20,
+          }).addTo(map);
+          document.getElementById("lat").value = e.latlng.lat;
+          document.getElementById("lon").value = e.latlng.lng;
+      }
+
+      map.on('click', onMapClick);
+      {% if row["lat"] %}
+        L.marker([{{ row["lat"] }}, {{ row["lon"] }}]).addTo(map);
+      {% endif %}
+    </script>
+  </body>
+</html>
