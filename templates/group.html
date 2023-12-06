@@ -31,7 +31,11 @@
           <div class="grid-form">
           <input type="text" placeholder="First Name" name="first_name" required/>
           <br>
-          <input type="text" placeholder="Last Name" name="last_name" />
+          <input type="text" placeholder="Last Name" name="last_name" 
+          {% if num == "new" %}
+              required
+          {% endif %}
+          />
           </div>
           <label>PW:</label>
           <input type="number" name="pw" required />
