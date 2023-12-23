@@ -14,6 +14,10 @@ breakpoints.
  and you will be placed in the debugger.
 
  ADDITIONS:
-[ ]  table for group
-[ ]  table for people, ultimately lat lon 
 [ ]  separate years/months on months URL
+[ ]  use htmx, tailwind
+[ ]  select courses for each day, add #bags?
+[ ]  add leaflet with animation of home to bandon and back
+
+
+
