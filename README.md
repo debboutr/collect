@@ -19,5 +19,12 @@ breakpoints.
 [ ]  select courses for each day, add #bags?
 [ ]  add leaflet with animation of home to bandon and back
 
+TABLES
+* loops
+    -- id, date, wage, bags, owner_id, group_id
+* groups
+    -- group_id, name
+* people
+    -- id, first_name, last_name, notes, lat, lon, group_id
 
 

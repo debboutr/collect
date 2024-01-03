@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>months</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',
+      filename='css/mango.css') }}">
     <script type="text/css">
     </script>
   </head>
@@ -14,9 +15,9 @@
           <tr>
             <td colspan="3">
               <a href="{{ url_for('month_detail', year=row['Year'], month=row['Month']) }}">
-              <h3>
-                {{ months[row["Month"]] }}
-              </h3>
+                <h3>
+                  {{ months[row["Month"]] }}
+                </h3>
               </a>
             </td>
           </tr>
@@ -33,18 +34,15 @@
           </tr>
           <tr>
             <td>{{ row["wages"] | round | int }}</td>
-            <td>
-              {% if row["bags"] % 1 == 0 %}
-              {{ row["bags"] | int }}
-              {% else %}
-              {{ row["bags"] }}
-              {% endif %}
-            </td>
+            <td> {{ row["bags"] | int }}</td>
             <td>{{ row["days"] }}</td>
           </tr>
         </table>
       </div>
       {% endfor %}
+      <div>
+        
+      </div>
     </div>
     <a href="{{ url_for('home') }}">
       <button type="button">

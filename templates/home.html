@@ -1,17 +1,37 @@
-<!doctype html>
-<html>
-  <head>
-    <title>monies</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  </head>
-  <body>
+{% extends "layout.html" %}
+{% block content %}
+    <div class"h-full">
+      <div class="bg-gray-400 flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+        {% for row in rows %}
+          <div>
+          <div class="bg-blue-400 border-4 border-sky-300 mx-2 size-40
+            rounded-lg transform transition hover:-translate-x-2 ">
+              <h1>{{ row["date"][5:] }}</h1>
+              <div class="text-green-800 text-xl">{{ row["wage"] | round | int }}<span class="float-right">{{ (row["bags"] | string).rstrip('.0') }}</span></div>
+              
+              <p>
+                 <a href="{{ url_for('create_group', num=row["group_id"]) }}">
+                   {{ row["name"] }}
+                 </a>
+              </p>
+              <p>whit is this?</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
     <div class="grid-container">
+      <div class="flex items-center justify-center">
+        {% include "partials/course_inputs.html" %}
+      </div>
+
       <div class="">
         <table>
            <thead>
               <td>Date</td>
               <td>Group</td>
-              <td>Wages</td>
+              <td class="text-xl text-gray-600">Wages</td>
               <td>No. of bags</td>
            </thead>
            {% for row in rows %}
@@ -55,5 +75,4 @@
         {{ msg }}
       </h1>
     </div>
-  </body>
-</html>
+{% endblock %}

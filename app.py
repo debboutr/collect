@@ -268,6 +268,10 @@ def create_group(num):
 
 @app.route("/person/<num>", methods=["GET", "POST"])
 def person(num):
+    print(request.files)
+    print(request.form)
+    print(request.form["filename"])
+    print(type(request.form["filename"]))
     context = dict()
     if request.method == "POST":
         try:
@@ -281,7 +285,13 @@ def person(num):
                 with sql.connect(DATABASE) as con:
                     cur = con.cursor()
                     cur.execute(
-                        f"UPDATE people SET last_name='{last_name}', first_name='{first_name}', notes='{notes}', lat={lat}, lon={lon} WHERE id={num}",
+                        "UPDATE people SET"
+                            f" last_name='{last_name}',"
+                            f" first_name='{first_name}',"
+                            f" notes='{notes}',"
+                            f" lat={lat},"
+                            f" lon={lon} "
+                            "WHERE id={num}",
                     )
                     con.commit()
                     context["msg"] = "Record successfully updated"

@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>View/Edit Person</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',
+      filename='css/mango.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
        crossorigin=""/>
@@ -15,14 +16,19 @@
           <b>Home</b>
         </button>
       </div>
+
       <!-- COLUMN CENTER -->
       <div class="">
+        <p>{{ row["id"] }}</p>
         <form action = "{{ url_for('person', num=num) }}" method = "post">
           <h3>{{ row["first_name"] }} {{ row["last_name"] }}</h3>
           <div class="grid-form">
             <input type="text" value='{{ row["first_name"] }}' name="first_name" />
             <input type="text" value='{{ row["last_name"] }}' name="last_name" />
           </div>
+            <button type="file">
+              <input class="danger" type="file" id="imageFile" name="filename">
+            </button>
             <textarea name="notes" rows="6" cols="100">{% if row %}{{ row['notes'] }}{% else %}{% endif %} </textarea>
           <div class="grid-form">
             <input type="number" placeholder="lat" step="any" name="lat" id="lat"
@@ -44,6 +50,7 @@
           <br>
         </form>
       </div>
+
       <!-- COLUMN RIGHT -->
       <div>
         <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
