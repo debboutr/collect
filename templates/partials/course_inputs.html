@@ -2,7 +2,12 @@
   id="bandon-checkbox"
   type="checkbox"
   value="bandon"
-  class="appearance-none peer/bandon">
+  name="bandon-checkbox"
+  class="appearance-none peer/bandon"
+  {% if 'bandon' in row.courses %}
+    checked
+  {% endif %}
+>
 <label
   for="bandon-checkbox"
   class="m-2 p-4 rounded-full bg-blue-100 border-4
@@ -11,13 +16,18 @@
   peer-checked/bandon:border-blue-600 ">
   <img
     class="w-8 h-8 md:w-12 md:h-12"
-    src="static/img/bandon.png" alt="nothing here">
+    src="{{ url_for('static', filename='img/bandon.png') }}" alt="bandon">
 </label>
 <input
   id="pac-checkbox"
   type="checkbox"
   value="pac"
-  class="appearance-none peer/pac">
+  name="pac-checkbox"
+  class="appearance-none peer/pac"
+  {% if "pac" in row.courses %}
+    checked
+  {% endif %}
+>
 <label
   for="pac-checkbox"
   class="m-2 p-4 rounded-full bg-blue-100 border-4
@@ -26,13 +36,18 @@
   peer-checked/pac:border-blue-600 ">
   <img
     class="w-8 h-8 md:w-12 md:h-12"
-    src="static/img/pac.png" alt="nothing here">
+    src="{{ url_for('static', filename='img/pac.png') }}" alt="pac">
 </label>
 <input
   id="trails-checkbox"
   type="checkbox"
   value="trails"
-  class="appearance-none peer/trails">
+  name="trails-checkbox"
+  class="appearance-none peer/trails"
+  {% if "trails" in row.courses %}
+    checked
+  {% endif %}
+>
 <label
   for="trails-checkbox"
   class="m-2 p-4 rounded-full bg-blue-100 border-4
@@ -41,13 +56,18 @@
   peer-checked/trails:border-blue-600 ">
   <img
     class="w-8 h-8 md:w-12 md:h-12"
-    src="static/img/trails.png" alt="nothing here">
+    src="{{ url_for('static', filename='img/trails.png') }}" alt="trails">
 </label>
 <input
   id="oldmac-checkbox"
   type="checkbox"
   value="oldmac"
-  class="appearance-none peer/oldmac">
+  name="oldmac-checkbox"
+  class="appearance-none peer/oldmac"
+  {% if "oldmac" in row.courses %}
+    checked
+  {% endif %}
+>
 <label
   for="oldmac-checkbox"
   class="m-2 p-4 rounded-full bg-blue-100 border-4
@@ -56,13 +76,18 @@
   peer-checked/oldmac:border-blue-600 ">
   <img
     class="w-8 h-8 md:w-12 md:h-12"
-    src="static/img/oldmac.png" alt="nothing here">
+    src="{{ url_for('static', filename='img/oldmac.png') }}" alt="oldmac">
 </label>
 <input
   id="sheep-checkbox"
   type="checkbox"
   value="sheep"
-  class="appearance-none peer/sheep">
+  name="sheep-checkbox"
+  class="appearance-none peer/sheep"
+  {% if "sheep" in row.courses %}
+    checked
+  {% endif %}
+>
 <label
   for="sheep-checkbox"
   class="m-2 p-4 rounded-full bg-blue-100 border-4
@@ -71,6 +96,6 @@
   peer-checked/sheep:border-blue-600 ">
   <img
     class="w-8 h-8 md:w-12 md:h-12"
-    src="static/img/sheep.png" alt="nothing here">
+    src="{{ url_for('static', filename='img/sheep.png') }}" alt="sheep">
 </label>
 

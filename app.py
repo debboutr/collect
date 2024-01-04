@@ -1,6 +1,7 @@
 import sqlite3 as sql
 from datetime import datetime as dt
 from datetime import timedelta
+from functools import wraps
 from pathlib import Path
 
 from flask import (Flask, flash, redirect, render_template, request, session,
@@ -9,6 +10,17 @@ from flask import (Flask, flash, redirect, render_template, request, session,
 DATABASE = Path(__file__).parent / "data/database.db"
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "Your_secret_string"
+
+
+@app.template_filter("split")
+def split(value: str, separator=",", maxsplit: int = -1):
+    return value.split(separator, maxsplit)
+
+
+def connect(db_url):
+    """A way to add the detected types"""
+    return sql.connect(db_url, detect_types=sql.PARSE_DECLTYPES | sql.PARSE_COLNAMES)
 
 
 @app.route("/", methods=["GET"])
@@ -60,6 +72,8 @@ def home():
 
 @app.route("/edit/<num>", methods=["GET", "POST"])
 def edit(num):
+    """Edit/Add individual days of work"""
+
     context = dict()
     if request.method == "POST":
         try:
@@ -67,19 +81,27 @@ def edit(num):
             wage = request.form["wage"]
             bags = request.form["bags"]
             group = request.form["group"]
+            courses = ",".join([v for k,v in request.form.items() if "checkbox" in k])
             pw = request.form["pw"]
             if pw == "47":
                 with sql.connect(DATABASE) as con:
                     cur = con.cursor()
                     if num == "new":
                         cur.execute(
-                            "INSERT INTO loops (date, wage,bags, group_id) VALUES (?,?,?,?)",
-                            (day, wage, bags, group),
+                            "INSERT INTO loops (date, wage,bags, group_id) VALUES (?,?,?,?,?)",
+                            (day, wage, bags, group, courses),
                         )
                     else:
-                        cur.execute(
-                            f"UPDATE loops SET date='{day}', wage={wage}, bags={bags}, group_id={group} WHERE id={num}",
-                        )
+                        print(courses)
+                        s = """UPDATE loops
+                                SET date='{}',
+                                wage={},
+                                bags={},
+                                group_id={},
+                                courses='{}'
+                                WHERE id={}"""
+                        print(s.format(day, wage, bags, group, courses, num))
+                        cur.execute(s.format(day, wage, bags, group, courses, num),)
                     con.commit()
                     context["msg"] = "Record successfully updated"
             else:
@@ -87,29 +109,43 @@ def edit(num):
         except:
             con.rollback()
             context["msg"] = "error in update operation"
-    with sql.connect(DATABASE) as con:
+
+    with connect(DATABASE) as con:
         con.row_factory = sql.Row
         cur = con.cursor()
         if num == "new":
             cur.execute(f"select * from groups order by group_id desc limit 5")
             group = cur.fetchall()
-            now = dt.now()
             row = dict(
                 id="new",
-                date=now.strftime("%Y-%m-%d"),
+                date=dt.now().strftime("%Y-%m-%d"),
                 wage=None,
                 bags=None,
                 owner_id=1,
             )
         else:
-            find_group = """select id, date, wage, bags, loops.group_id, name
+            test = """select id, date, wage, bags, loops.group_id, name, sum(wage) as wages
+                            from loops
+                            inner join groups
+                            on loops.group_id = groups.group_id
+                            where id='3'
+                            group by
+                                loops.group_id;"""
+            cur.execute(test.format(num))
+            rows = cur.fetchall()
+            find_group = """select id, date, wage, bags, courses, loops.group_id, name
                             from loops
                             inner join groups
                             on loops.group_id = groups.group_id
                             where id='{}';"""
             cur.execute(find_group.format(num))
             row = cur.fetchone()
-            cur.execute(f"select * from groups order by group_id desc limit 5")
+            cur.execute("""select groups.group_id, name, sum(wage) as wages
+                            from groups
+                            inner join loops
+                            on groups.group_id = loops.group_id
+                            group by loops.group_id
+                            ;""")
             group = cur.fetchall()
             group = [g for g in group if g["group_id"] != row["group_id"]]
     context.update(
@@ -198,11 +234,12 @@ def month_detail(year, month):
 
 @app.route("/total", methods=["GET"])
 def total():
-    con = sql.connect(DATABASE)
+    con = connect(DATABASE)
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from loops order by date desc")
     rows = cur.fetchall()
+    print(dict(rows[0]))
     context = {"rows": rows}
     con.close()
     return render_template("total.html", **context)

@@ -1,57 +1,52 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Edit monies</title>
-    <link rel="stylesheet" href="{{ url_for('static',
-      filename='css/mango.css') }}">
-  </head>
-  <body>
-    <div class="grid-container">
-      <div> 
-        <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
-          <b>Home</b>
-        </button>
+{% extends "layout.html" %}
+{% block title %}+Add A Day+{% endblock %}
+{% block content %}
+<div class="grid-container">
+  <div> 
+    <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
+      <b>Home</b>
+    </button>
+  </div>
+  <div class="">
+    <form action = "{{ url_for('edit', num=row.id) }}" method = "POST">
+      <h3>Info</h3>
+        <label>Date:</label>
+        <span><input value={{ row.date }} type="text" name="day" placeholder="use only if not today YYYY-MM-DD" /></span>
+        <br>
+        <label>Wage:</label>
+        <span><input value={{ row.wage }} type="number" name="wage" required /></span>
+        <br>
+        <label>Bags:</label>
+        <span><input value={{ row.bags }} type="number" step="0.5" name="bags" required /></span>
+        <br>
+        <label>Group:</label>
+          <select name="group" required>
+          {% if num == "new" %}
+            <option value={{ group.0.group_id }} selected>{{ group.0.name }}</option>
+          {% else %}
+            <option value={{ row.group_id }} selected>{{ row.name }}</option>
+          {% endif %}
+          {% for g in group[1:] %}
+            <option value={{ g.group_id }}>{{ g.name }}</option>
+          {% endfor %}
+          </select>
+        <br>
+        <label>PW:</label>
+        <span><input type="number" name="pw" required /></span>
+        <br>
+      <div class="flex items-center justify-center">
+        {% include "partials/course_inputs.html" %}
       </div>
-      <div class="">
-        <form action = "{{ url_for('edit', num=row["id"]) }}" method = "POST">
-          <h3>Info</h3>
-            <label>Date:</label>
-            <span><input value={{ row["date"] }} type="text" name="day" placeholder="use only if not today YYYY-MM-DD" /></span>
-            <br>
-            <label>Wage:</label>
-            <span><input value={{ row["wage"] }} type="number" name="wage" required /></span>
-            <br>
-            <label>Bags:</label>
-            <span><input value={{ row["bags"] }} type="number" step="0.5" name="bags" required /></span>
-            <br>
-            <label>Group:</label>
-              <select name="group" required>
-              {% if num == "new" %}
-                <option value={{ group.0["group_id"] }} selected>{{ group.0['name']}}</option>
-              {% else %}
-                <option value={{ row["group_id"] }} selected>{{ row['name']}}</option>
-              {% endif %}
-              {% for g in group[1:] %}
-                <option value={{ g["group_id"] }}>{{ g['name']}}</option>
-              {% endfor %}
-              </select>
-            <br>
-            <label>PW:</label>
-            <span><input type="number" name="pw" required /></span>
-            <br>
-          <input class="button" type="submit" value="submit" /><br>
-        </form>
-      </div>
-      <div>
-        <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
-          <b>Total</b>
-        </button>
-      </div>
-    </div>
-    <div id="hideMe" class="alert">
-      <h1>
-        {{ msg }}
-      </h1>
-    </div>
-  </body>
-</html>
+      <input type="submit" value="submit" /><br>
+    </form>
+  </div>
+  {% for w in ["bandono","pac","trails"] %}
+  <p>{{ w }}</p>
+  {% endfor %}
+  <div>
+    <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
+      <b>Total</b>
+    </button>
+  </div>
+</div>
+{% endblock %}

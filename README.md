@@ -15,7 +15,7 @@ breakpoints.
 
  ADDITIONS:
 [ ]  separate years/months on months URL
-[ ]  use htmx, tailwind
+[ ]  use tailwind
 [ ]  select courses for each day, add #bags?
 [ ]  add leaflet with animation of home to bandon and back
 

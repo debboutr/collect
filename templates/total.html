@@ -1,50 +1,32 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Monthly Breakdown</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mango.css') }}">
-  </head>
+{% extends "layout.html" %}
+{% block content %}
+<div class="">
+  <table>
+    <thead>
+      <td>No.</td>
+      <td>Date</td>
+      <td>Wages</td>
+      <td>No. of bags</td>
+    </thead>
 
-  <body>
-    <div class="grid-container">
-      <div class="">
-        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
-          <b>Months</b>
-        </button>
-      </div>
-      <div class="">
-        <table>
-          <thead>
-            <td>No.</td>
-            <td>Date</td>
-            <td>Wages</td>
-            <td>No. of bags</td>
-          </thead>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row["id"] }}</td>
+      <td>{{ row.date.strftime("%d-%d-%Y") }}</td>
+      <td>{{ row.date.strftime("%A") }}</td>
+      <td>{{ row["wage"] | round | int }}</td>
+      <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
+      <td>
+        <a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
+      </td>
+      <td>
+        <form action = "{{ url_for('delete', num=row["id"]) }}" method = "POST">
+          <input class="danger" onclick="return confirm('are you sure?')" type = "submit" value = "X" /><br>
+        </form>
 
-          {% for row in rows %}
-          <tr>
-            <td>{{ row["id"] }}</td>
-            <td>{{ row["date"] }}</td>
-            <td>{{ row["wage"] | round | int }}</td>
-            <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
-            <td>
-              <a href="{{ url_for('edit', num=row["id"]) }}">edit</a>
-            </td>
-            <td>
-              <form action = "{{ url_for('delete', num=row["id"]) }}" method = "POST">
-                <input class="danger" onclick="return confirm('are you sure?')" type = "submit" value = "X" /><br>
-              </form>
-
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-      <div class="">
-        <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
-          <b>Home</b>
-        </button>
-      </div>
-    </div>
-  </body>
-</html>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock content %}
