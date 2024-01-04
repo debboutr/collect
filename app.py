@@ -19,54 +19,62 @@ def split(value: str, separator=",", maxsplit: int = -1):
 
 
 def connect(db_url):
-    """A way to add the detected types"""
+    """A way to add the detected types, aka datetime objects"""
     return sql.connect(db_url, detect_types=sql.PARSE_DECLTYPES | sql.PARSE_COLNAMES)
 
 
 @app.route("/", methods=["GET"])
 def home():
+    """A place to show all of your efforts"""
+
     context = dict()
     now = dt.now()
-    last_year = dt(now.year - 1, 12, 31, 4, 20, 47)
-    total_days = (now - last_year).days
-    con = sql.connect(DATABASE)
-    cursor = con.cursor()
-    find_wages = """select sum(wage), sum(bags)
-                    from loops
-                    where
-                        substr(date, 0, 5) = '{}';"""
-    cursor.execute(find_wages.format(now.year))
-    tot_wages, tot_bags = cursor.fetchone()
-    tot_wages = tot_wages if tot_wages else 0
-    tot_bags = tot_bags if tot_bags else 0.47
-    avg_wage = round(tot_wages / tot_bags, 2)
-    find_work_days = """select count(*)
+    with sql.connect(DATABASE) as con:
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        s = """select
+                sum(wage) as wages,
+                sum(bags) as bags,
+                count(wage) as days_worked,
+                round(avg(wage)/bags, 2) as avg_wage
                         from loops
-                        where bags > 0 and
-                        substr(date, 0, 5) = '{}';"""
-    cursor.execute(find_work_days.format(now.year))
-    work_days = cursor.fetchone()[0]
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    loops = """select date, wage, bags, loops.group_id, name
-                from loops 
-                inner join groups
-                on loops.group_id = groups.group_id"""
-    cur.execute(loops)
-    rows = cur.fetchall()[-5:]
+                        where
+                            substr(date, 0, 5) = '{}';"""
+        cur.execute(s.format(now.year))
+        stats = cur.fetchone()
+        s = """select date, wage, bags, loops.group_id, name
+                    from loops 
+                    inner join groups
+                    on loops.group_id = groups.group_id
+                    order by
+                        id desc
+                    limit 5;"""
+        cur.execute(s)
+        rows = cur.fetchall()
+        test = """select
+                    loops.group_id,
+                    name,
+                    sum(wage) as wages,
+                    GROUP_CONCAT(courses) as courses
+                        from loops
+                        inner join groups
+                        on loops.group_id = groups.group_id
+                        group by
+                            loops.group_id;"""
+        cur.execute(test)
+        frows = cur.fetchall()
+    print(dict(frows[0]))
+    print(dict(frows[1]))
+    print(dict(frows[2]))
+    print(len(frows))
     context.update(
         {
             "rows": rows,
-            "tot_bags": tot_bags,
-            "tot_wages": tot_wages,
-            "avg_wage": avg_wage,
+            "stats": stats,
             "user": session,
-            "total_days": total_days,
-            "work_days": work_days,
-            "year": dt.now().year,
+            "now": now,
         }
     )
-    con.close()
     return render_template("home.html", **context)
 
 
@@ -124,15 +132,6 @@ def edit(num):
                 owner_id=1,
             )
         else:
-            test = """select id, date, wage, bags, loops.group_id, name, sum(wage) as wages
-                            from loops
-                            inner join groups
-                            on loops.group_id = groups.group_id
-                            where id='3'
-                            group by
-                                loops.group_id;"""
-            cur.execute(test.format(num))
-            rows = cur.fetchall()
             find_group = """select id, date, wage, bags, courses, loops.group_id, name
                             from loops
                             inner join groups
