@@ -1,14 +1,22 @@
+import os
 import sqlite3 as sql
 from datetime import datetime as dt
 from pathlib import Path
-# this is a comment
 from flask import (Flask, flash, redirect, render_template, request, session,
                    url_for)
+from werkzeug.utils import secure_filename
 
 DATABASE = Path(__file__).parent / "data/database.db"
+UPLOAD_FOLDER = Path(__file__).parent / 'static/uploads'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "Your_secret_string"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.template_filter("split")
@@ -62,10 +70,10 @@ def home():
                             loops.group_id;"""
         cur.execute(test)
         frows = cur.fetchall()
-    print(dict(frows[0]))
-    print(dict(frows[1]))
-    print(dict(frows[2]))
-    print(len(frows))
+    # print(dict(frows[0]))
+    # print(dict(frows[1]))
+    # print(dict(frows[2]))
+    # print(len(frows))
     context.update(
         {
             "rows": rows,
@@ -97,7 +105,7 @@ def edit(num):
                             (day, wage, bags, group, courses),
                         )
                     else:
-                        print(courses)
+                        # print(courses)
                         s = """UPDATE loops
                                 SET date='{}',
                                     wage={},
@@ -105,7 +113,7 @@ def edit(num):
                                     group_id={},
                                     courses='{}'
                                 WHERE id={}"""
-                        print(s.format(day, wage, bags, group, courses, num))
+                        # print(s.format(day, wage, bags, group, courses, num))
                         cur.execute(s.format(day, wage, bags, group, courses, num),)
                     con.commit()
                     context["msg"] = "Record successfully updated"
@@ -235,7 +243,7 @@ def total():
     cur = con.cursor()
     cur.execute("select * from loops order by date desc")
     rows = cur.fetchall()
-    print(dict(rows[0]))
+    # print(dict(rows[0]))
     context = {"rows": rows}
     con.close()
     return render_template("total.html", **context)
@@ -302,42 +310,50 @@ def create_group(num):
 @app.route("/person/<num>", methods=["GET", "POST"])
 def person(num):
     # print(request.files)
-    print(request.form)
-    # print(request.form["image_file"])
+    # print(request.form)
     # print(type(request.form["filename"]))
     context = dict()
     if request.method == "POST":
-        try:
-            first_name = request.form["first_name"]
-            last_name = request.form["last_name"]
-            notes = request.form["notes"].strip()
-            lat = request.form["lat"]
-            lon = request.form["lon"]
-            pw = request.form["pw"]
-            if pw == "47":
-                with sql.connect(DATABASE) as con:
-                    cur = con.cursor()
-                    cur.execute(
-                        "UPDATE people SET"
-                            f" last_name='{last_name}',"
-                            f" first_name='{first_name}',"
-                            f" notes='{notes}',"
-                            f" lat={lat},"
-                            f" lon={lon} "
-                            "WHERE id={num}",
-                    )
-                    con.commit()
-                    context["msg"] = "Record successfully updated"
-            else:
-                context["msg"] = "PW incorrect"
-        except:
-            con.rollback()
-            context["msg"] = "error in update operation"
+        with sql.connect(DATABASE) as con:
+            try:
+                print(request.files)
+                first_name = request.form["first_name"]
+                last_name = request.form["last_name"]
+                notes = request.form["notes"].strip()
+                lat = request.form["lat"]
+                lon = request.form["lon"]
+                img = request.files["image_file"]
+                pw = request.form["pw"]
+                if pw == "47":
+                    if img and allowed_file(img.filename):
+                        filename = secure_filename(img.filename)
+                        img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        cur = con.cursor()
+                        cur.execute(
+                            "UPDATE people SET"
+                                f" last_name='{last_name}',"
+                                f" first_name='{first_name}',"
+                                f" notes='{notes}',"
+                                f" lat={lat},"
+                                f" lon={lon} ,"
+                                f" image='{filename}' "
+                                f"WHERE id={num}",
+                        )
+                        con.commit()
+                        print("fil.ename", app.config['UPLOAD_FOLDER'])
+                        flash("recurd updated")
+                else:
+                    context["msg"] = "PW incorrect"
+            except Exception as e:
+                con.rollback()
+                print("something went wrong")
+                print(e)
     con = sql.connect(DATABASE)
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute(f"select * from people where id={num}")
     row = cur.fetchone()
+    print(row.keys())
     con.close()
     if not row["first_name"]:
         row = dict(first_name="", last_name="", notes="", lat="", lon="")

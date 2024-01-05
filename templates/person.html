@@ -30,8 +30,9 @@
     <div class="bg-zinc-500 w-1/3 p-4">
       <form 
         action = "{{ url_for('person', num=num) }}"
-        method="post">
-          <div class="grid gap-6 mb-6 md:grid-cols-2 p-4">
+        method="post"
+        enctype="multipart/form-data">
+          <div class="grid gap-6 mb-2 md:grid-cols-2 p-4">
               <div>
                   <label for="first_name" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">First name</label>
                   <input type="text"
@@ -66,9 +67,41 @@
                   {% if row %}{{ row.notes }}{% else %}{% endif %}
               </textarea>
           </div> 
+
+          <div id="location" class="grid gap-6 mb-6 md:grid-cols-2 p-4 rounded-lg">
+            <div>
+              <label for="lat" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Latitude</label>
+              <input type="text"
+                id="lat"
+                name="lat"
+                {% if row.lat %}
+                   value={{ row.lat }}
+                {% endif %}
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="{{ row.lat }}"
+                          required>
+            </div>
+            <div>
+              <label for="lon" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Longitude</label>
+              <input type="text"
+                id="lon"
+                name="lon"
+                {% if row.lon %}
+                   value={{ row.lon }}
+                {% endif %}
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="{{ row.lon }}"
+                          required>
+            </div>
+          </div>
+
           <div class="mb-6">
               <label for="password" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Password</label>
-              <input type="password" id="password" 
+              <input type="password" id="password" name="pw"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="••" required>
           </div> 
@@ -84,27 +117,11 @@
           <div class="mb-6 float-right">
             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
           </div> 
-
-
       </form>
 
-            <!--   <input type="number" placeholder="lat" step="any" name="lat" id="lat" -->
-            <!--     {% if row.lat %} -->
-            <!--        value={{ row.lat }} -->
-            <!--     {% endif %} -->
-            <!--   /> -->
-            <!--   <input type="number" placeholder="lon" step="any" name="lon" id="lon" -->
-            <!--     {% if row.lon %} -->
-            <!--        value={{ row.lon }} -->
-            <!--     {% endif %} -->
-            <!--   /> -->
-            <!--   <label>PW:</label> -->
-            <!--   <input type="number" name="pw" required /> -->
-            <!--   <input class="button" type="submit" value="submit" /> -->
-            <!-- </form> -->
     </div>
     <!-- MAP DIV -->
-    <div class="bg-green-500 basis-1/3 py-32">
+    <div class="bg-green-500 basis-1/2 py-32">
       <div id="map" class="h-full"></div>
     </div>
   </div>
@@ -123,17 +140,19 @@
         maxZoom: 19,
         attribution: ''
     }).addTo(map);
+    markerLayer = L.layerGroup().addTo(map);
 
-    document.getElementsByClassName( 'leaflet-control-attribution' )[0].style.display = 'none';
     function onMapClick(e) {
+        markerLayer.clearLayers();
         L.circleMarker(e.latlng, {
           color: '#f07300',
           fillOpacity: 0.3,
           opacity: 0.8,
           radius: 20,
-        }).addTo(map);
+        }).addTo(markerLayer);
         document.getElementById("lat").value = e.latlng.lat;
         document.getElementById("lon").value = e.latlng.lng;
+        document.getElementById("location").classList.add("border-solid", "border-2", "border-blue-600");
     }
 
     map.on('click', onMapClick);

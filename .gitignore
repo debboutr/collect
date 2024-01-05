@@ -1,4 +1,6 @@
 **/__pycache__
+static/uploads/*
+!static/uploads/.gitkeep
 data/
 *.bak
 *.db
