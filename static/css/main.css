@@ -617,6 +617,11 @@ video {
   height: 10rem;
 }
 
+.size-24 {
+  width: 6rem;
+  height: 6rem;
+}
+
 .h-1\/6 {
   height: 16.666667%;
 }

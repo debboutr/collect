@@ -325,23 +325,28 @@ def person(num):
                 img = request.files["image_file"]
                 pw = request.form["pw"]
                 if pw == "47":
+                    cur = con.cursor()
+                    cur.execute(
+                            "UPDATE people SET"
+                            f" last_name='{last_name}',"
+                            f" first_name='{first_name}',"
+                            f" notes='{notes}',"
+                            f" lat={lat},"
+                            f" lon={lon} "
+                            f"WHERE id={num}",
+                            )
+                    con.commit()
                     if img and allowed_file(img.filename):
                         filename = secure_filename(img.filename)
                         img.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        cur = con.cursor()
                         cur.execute(
-                            "UPDATE people SET"
-                                f" last_name='{last_name}',"
-                                f" first_name='{first_name}',"
-                                f" notes='{notes}',"
-                                f" lat={lat},"
-                                f" lon={lon} ,"
+                                "UPDATE people SET"
                                 f" image='{filename}' "
                                 f"WHERE id={num}",
-                        )
+                                )
                         con.commit()
-                        print("fil.ename", app.config['UPLOAD_FOLDER'])
-                        flash("recurd updated")
+                    print("fil.ename", app.config['UPLOAD_FOLDER'])
+                    flash("recurd updated")
                 else:
                     context["msg"] = "PW incorrect"
             except Exception as e:
@@ -353,8 +358,8 @@ def person(num):
     cur = con.cursor()
     cur.execute(f"select * from people where id={num}")
     row = cur.fetchone()
-    print(row.keys())
     con.close()
+    print(len(row["notes"]))
     if not row["first_name"]:
         row = dict(first_name="", last_name="", notes="", lat="", lon="")
     context.update(
