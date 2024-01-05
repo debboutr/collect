@@ -1,102 +1,144 @@
-<!doctype html>
-<html>
-  <head>
-    <title>View/Edit Person</title>
-    <link rel="stylesheet" href="{{ url_for('static',
-      filename='css/mango.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-       crossorigin=""/>
-  </head>
-  <body>
-    <div class="grid-container">
-      <!-- COLUMN LEFT -->
-      <div> 
-        <button type="button" onclick="window.location.href='{{ url_for('home') }}';">
-          <b>Home</b>
-        </button>
-      </div>
+{% extends "layout.html" %}
+{% block content %}
+  <div class="h-screen flex">
 
-      <!-- COLUMN CENTER -->
-      <div class="">
-        <p>{{ row["id"] }}</p>
-        <form action = "{{ url_for('person', num=num) }}" method = "post">
-          <h3>{{ row["first_name"] }} {{ row["last_name"] }}</h3>
-          <div class="grid-form">
-            <input type="text" value='{{ row["first_name"] }}' name="first_name" />
-            <input type="text" value='{{ row["last_name"] }}' name="last_name" />
-          </div>
-            <button type="file">
-              <input class="danger" type="file" id="imageFile" name="filename">
-            </button>
-            <textarea name="notes" rows="6" cols="100">{% if row %}{{ row['notes'] }}{% else %}{% endif %} </textarea>
-          <div class="grid-form">
-            <input type="number" placeholder="lat" step="any" name="lat" id="lat"
-              {% if row["lat"] %}
-                 value={{ row["lat"] }}
-              {% endif %}
-            />
-            <input type="number" placeholder="lon" step="any" name="lon" id="lon"
-              {% if row["lon"] %}
-                 value={{ row["lon"] }}
-              {% endif %}
-            />
-          </div>
-          <div id="map"></div>
-          <label>PW:</label>
-          <input type="number" name="pw" required />
-          <br>
-          <input class="button" type="submit" value="submit" />
-          <br>
-        </form>
-      </div>
-
-      <!-- COLUMN RIGHT -->
-      <div>
-        <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
-          <b>Total</b>
+    <!-- NAV DIV -->
+    <div class="bg-green-200 basis-1/6">
+      <div class="flex flex-col">
+        <button type="button"
+          onclick="window.location.href='{{ url_for('home') }}';"
+          class="bg-sky-700 text-3xl m-8 h-12 rounded-full"
+        >
+            Home
         </button>
-        <br>
-        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
-          <b>Months</b>
+        <button type="button"
+          onclick="window.location.href='{{ url_for('total') }}';"
+          class="bg-sky-700 text-3xl m-8 h-12 rounded-full"
+        >
+          Total
+        </button>
+        <button type="button"
+          onclick="window.location.href='{{ url_for('months') }}';"
+          class="bg-sky-700 text-3xl m-8 h-12 rounded-full"
+        >
+          Months
         </button>
       </div>
     </div>
-    <!-- ALERT -->
-    <div id="hideMe" class="alert">
-      <h1>
-        {{ msg }}
-      </h1>
+
+    <!-- FORM DIV -->
+    <div class="bg-zinc-500 w-1/3 p-4">
+      <form 
+        action = "{{ url_for('person', num=num) }}"
+        method="post">
+          <div class="grid gap-6 mb-6 md:grid-cols-2 p-4">
+              <div>
+                  <label for="first_name" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                  <input type="text"
+                    name="first_name"
+                    value="{{ row.first_name }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                      dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="{{ row.first_name }}"
+                    required>
+              </div>
+              <div>
+                  <label for="last_name" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                  <input type="text"
+                    name="last_name"
+                    value="{{ row.last_name }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                      dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="{{ row.last_name }}"
+                    required>
+              </div>
+          </div>
+
+          <div class="mb-6">
+              <label for="notes" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Notes</label>
+              <textarea name="notes" rows="6" cols="100"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="write it down...">
+                  {% if row %}{{ row.notes }}{% else %}{% endif %}
+              </textarea>
+          </div> 
+          <div class="mb-6">
+              <label for="password" class="block mb-2 text-center text-sm font-medium text-gray-900 dark:text-white">Password</label>
+              <input type="password" id="password" 
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="••" required>
+          </div> 
+
+          <div class="mb-6">
+            <label class="block mb-2 text-sm font-medium text-center text-gray-900 dark:text-white" for="file_input">Upload Image</label>
+            <input class="block w-full text-sm text-gray-900 border
+          border-gray-300 rounded-lg cursor-pointer bg-gray-50
+          dark:text-gray-400 focus:outline-none dark:bg-gray-700
+          dark:border-gray-600 dark:placeholder-gray-400" name="image_file" type="file">
+          </div> 
+
+          <div class="mb-6 float-right">
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+          </div> 
+
+
+      </form>
+
+            <!--   <input type="number" placeholder="lat" step="any" name="lat" id="lat" -->
+            <!--     {% if row.lat %} -->
+            <!--        value={{ row.lat }} -->
+            <!--     {% endif %} -->
+            <!--   /> -->
+            <!--   <input type="number" placeholder="lon" step="any" name="lon" id="lon" -->
+            <!--     {% if row.lon %} -->
+            <!--        value={{ row.lon }} -->
+            <!--     {% endif %} -->
+            <!--   /> -->
+            <!--   <label>PW:</label> -->
+            <!--   <input type="number" name="pw" required /> -->
+            <!--   <input class="button" type="submit" value="submit" /> -->
+            <!-- </form> -->
     </div>
-    <!-- JAVASCRIPT -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-       crossorigin=""></script>
-    <script>
+    <!-- MAP DIV -->
+    <div class="bg-green-500 basis-1/3 py-32">
+      <div id="map" class="h-full"></div>
+    </div>
+  </div>
 
-      var map = L.map('map').setView([39.8333, -98.5833], 4);
+{% endblock %}
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: ''
-      }).addTo(map);
+{% block scripts %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  <script>
 
-      document.getElementsByClassName( 'leaflet-control-attribution' )[0].style.display = 'none';
-      function onMapClick(e) {
-          L.circleMarker(e.latlng, {
-            color: '#f07300',
-            fillOpacity: 0.3,
-            opacity: 0.8,
-            radius: 20,
-          }).addTo(map);
-          document.getElementById("lat").value = e.latlng.lat;
-          document.getElementById("lon").value = e.latlng.lng;
-      }
+    var map = L.map('map').setView([39.8333, -98.5833], 4);
 
-      map.on('click', onMapClick);
-      {% if row["lat"] %}
-        L.marker([{{ row["lat"] }}, {{ row["lon"] }}]).addTo(map);
-      {% endif %}
-    </script>
-  </body>
-</html>
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: ''
+    }).addTo(map);
+
+    document.getElementsByClassName( 'leaflet-control-attribution' )[0].style.display = 'none';
+    function onMapClick(e) {
+        L.circleMarker(e.latlng, {
+          color: '#f07300',
+          fillOpacity: 0.3,
+          opacity: 0.8,
+          radius: 20,
+        }).addTo(map);
+        document.getElementById("lat").value = e.latlng.lat;
+        document.getElementById("lon").value = e.latlng.lng;
+    }
+
+    map.on('click', onMapClick);
+    {% if row.lat %}
+      L.marker([{{ row.lat }}, {{ row.lon }}]).addTo(map);
+    {% endif %}
+  </script>
+{% endblock %}

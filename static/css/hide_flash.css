@@ -1,0 +1,11 @@
+#hideMe{
+  animation: hideAnimation 0s ease-in 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes hideAnimation {
+  to {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }

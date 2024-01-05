@@ -1,74 +1,123 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class"h-full">
-      <div class="bg-gray-400 flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-        {% for row in rows %}
-          <div>
-          <div class="bg-blue-400 border-4 border-sky-300 mx-2 size-40
-            rounded-lg transform transition hover:-translate-x-2 ">
-              <h1>{{ row["date"][5:] }}</h1>
-              <div class="text-green-800 text-xl">{{ row["wage"] | round | int }}<span class="float-right">{{ (row["bags"] | string).rstrip('.0') }}</span></div>
-              
-              <p>
-                 <a href="{{ url_for('create_group', num=row["group_id"]) }}">
-                   {{ row["name"] }}
-                 </a>
-              </p>
-              <p>whit is this?</p>
+
+<div class="h-screen">
+<div class="flex flex-row">
+  <div class="bg-green-200 basis-1/4 md:basis-1/3">01</div>
+  <div class="bg-red-200 basis-1/4 md:basis-1/3">02</div>
+  <div class="bg-green-200 basis-1/2 md:basis-1/3">03</div>
+</div>
+</div>
+
+<div class="h-screen relative">
+  <div class="bg-amber-400 h-1/6 sm:h-1/3 flex justify-center items-center overflow-x-auto max-lg:[&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+    {% for row in rows %}
+      <a class="w-1/3 h-64 sm:h-48" href="{{ url_for('create_group', num=row["group_id"]) }}">
+        <div class="bg-zinc-300 border-2 lg:border-4 border-zinc-500 shadow-xl m-2 p-1 h-full w-1/4 rounded-lg transform transition hover:-translate-x-1 ">
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  <div class="bg-zinc-500 h-full w-screen">
+  </div>
+  <div class="bg-red-200 h-32 w-screen absolute bottom-0">
+  </div>
+</div>
+
+<div class="h-full bg-zinc-800 flex overflow-x-auto max-lg:[&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+  {% for row in rows %}
+    <div>
+      <a href="{{ url_for('create_group', num=row["group_id"]) }}">
+        <div class="bg-green-200 border-4 border-amber-400 m-2 p-1 size-40 rounded-lg transform transition hover:-translate-x-1 ">
+          <h1 class="h-2 text-sm">{{ row.date[5:] }}</h1>
+          <h3>{{ row["date"][5:] }}</h3>
+          <div class="h-4 text-green-800 text-xl">
+            {{ row["wage"] | round | int }}
+            <span class="float-right">{{ (row["bags"] | string).rstrip('.0') }}</span>
+          </div>
+          
+          <h1 class="h-8 text-sm">{{ row["name"] }}</h1>
+          
+          <div class="relative">
+            <div class="inline-flex items-left bottom-0">
+              <div class="w-5 h-5 m-1 rounded-full absolute">
+                <img
+                  class=""
+                  src="{{ url_for('static', filename='img/bandon.png') }}" alt="bandon">
+              </div>
+              <div class="w-5 h-5 m-1 rounded-full bg-zinc-100">
+              </div>
+              <div class="w-5 h-5 m-1 rounded-full">
+                <img
+                  class=""
+                  src="{{ url_for('static', filename='img/bandon.png') }}" alt="bandon">
+              </div>
+              <div class="w-5 h-5 m-1 rounded-full">
+                <img
+                  class=""
+                  src="{{ url_for('static', filename='img/bandon.png') }}" alt="bandon">
+              </div>
+              <div class="w-5 h-5 m-1 rounded-full">
+                <img
+                  class=""
+                  src="{{ url_for('static', filename='img/bandon.png') }}" alt="bandon">
+              </div>
             </div>
           </div>
-        {% endfor %}
-      </div>
+        </div>
+      </a>
     </div>
+  {% endfor %}
+</div>
 
-    <div class="grid-container">
-      <div class="">
-        <table>
-           <thead>
-              <td>Date</td>
-              <td>Group</td>
-              <td class="text-xl text-gray-600">Wages</td>
-              <td>No. of bags</td>
-           </thead>
-           {% for row in rows %}
-              <tr>
-                 <td>{{ row["date"][5:] }}</td>
-                 <td>
-                   <a href="{{ url_for('create_group', num=row["group_id"]) }}">
-                     {{ row["name"] }}
-                   </a>
-                 </td>
-                 <td>{{ row["wage"] | round | int }}</td>
-                 <td>{{ (row["bags"] | string).rstrip('.0') }}</td>
-              </tr>
-           {% endfor %}
-        </table>
-      </div>
-      <div class="">
-        <h1>Caddy Stats</h1>
-        <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
-          <b>Months</b>
-        </button>
-        <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
-          <b>Total</b>
-        </button>
-        <h3>{{ now.year }}</h3>
-        <button type="button" onclick="window.location.href='{{ url_for('edit', num="new") }}';">
-          <b>+</b>
-        </button>
-        <button type="button" onclick="window.location.href='{{ url_for('create_group', num="new") }}';">
-          <b>iiii</b>
-        </button>
-      </div>
-      <div class="grid-side">
-        <div>Days Worked<br>{{ stats.days_worked }} / {{ now.timetuple().tm_yday }}</div>
-        <div>Bags /  Wages<br>{{ stats.bags | int }} / {{ "${:,.0f}".format(stats.wages) }}</div>
-        <div>Avg. Bag Fee<br>${{ stats.avg_wage  }}</div>
-      </div>
-    </div>
-    <div id="hideMe" class="alert">
-      <h1>
-        {{ msg }}
-      </h1>
-    </div>
+<div class="">
+  <table>
+     <thead>
+        <td>Date</td>
+        <td>Group</td>
+        <td class="text-xl text-gray-600">Wages</td>
+        <td>No. of bags</td>
+     </thead>
+     {% for row in rows %}
+        <tr>
+           <td>{{ row["date"][5:] }}</td>
+           <td>
+             <a href="{{ url_for('create_group', num=row["group_id"]) }}">
+               {{ row["name"] }}
+             </a>
+           </td>
+           <td>{{ row["wage"] | round | int }}</td>
+           <td>{{ (row["bags"] | string).rstrip('.0') }}</td>
+        </tr>
+     {% endfor %}
+  </table>
+</div>
+<div class="">
+  <h1>Caddy Stats</h1>
+  <button type="button" onclick="window.location.href='{{ url_for('months') }}';">
+    <b>Months</b>
+  </button>
+  <button type="button" onclick="window.location.href='{{ url_for('total') }}';">
+    <b>Total</b>
+  </button>
+  <h3>{{ now.year }}</h3>
+  <button type="button" onclick="window.location.href='{{ url_for('edit', num="new") }}';">
+    <b>+</b>
+  </button>
+  <button type="button" onclick="window.location.href='{{ url_for('create_group', num="new") }}';">
+    <b>iiii</b>
+  </button>
+</div>
+<div class="">
+  <div>Days Worked<br>{{ stats.days_worked }} / {{ now.timetuple().tm_yday }}</div>
+  <div>Bags /  Wages<br>{{ stats.bags | int }} / {{ "${:,.0f}".format(stats.wages) }}</div>
+  <div>Avg. Bag Fee<br>${{ stats.avg_wage  }}</div>
+</div>
+
+<div id="hideMe" class="alert">
+  <h1>
+    {{ msg }}
+  </h1>
+</div>
+
 {% endblock %}

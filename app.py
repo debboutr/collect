@@ -1,9 +1,7 @@
 import sqlite3 as sql
 from datetime import datetime as dt
-from datetime import timedelta
-from functools import wraps
 from pathlib import Path
-
+# this is a comment
 from flask import (Flask, flash, redirect, render_template, request, session,
                    url_for)
 
@@ -29,6 +27,7 @@ def home():
 
     context = dict()
     now = dt.now()
+    flash("this should go away")
     with sql.connect(DATABASE) as con:
         con.row_factory = sql.Row
         cur = con.cursor()
@@ -48,7 +47,7 @@ def home():
                     on loops.group_id = groups.group_id
                     order by
                         id desc
-                    limit 5;"""
+                    limit 10;"""
         cur.execute(s)
         rows = cur.fetchall()
         test = """select
@@ -84,14 +83,12 @@ def edit(num):
 
     context = dict()
     if request.method == "POST":
-        try:
-            day = request.form["day"]
-            wage = request.form["wage"]
-            bags = request.form["bags"]
-            group = request.form["group"]
-            courses = ",".join([v for k,v in request.form.items() if "checkbox" in k])
-            pw = request.form["pw"]
-            if pw == "47":
+        f = request.form
+        day, wage, bags, group, pw = f["day"], f["wage"], f["bags"], f["group"], f["pw"]
+        courses = ",".join([v for k,v in f.items() if "checkbox" in k])
+        pw = request.form["pw"]
+        if pw == "47":
+            try:
                 with sql.connect(DATABASE) as con:
                     cur = con.cursor()
                     if num == "new":
@@ -103,20 +100,20 @@ def edit(num):
                         print(courses)
                         s = """UPDATE loops
                                 SET date='{}',
-                                wage={},
-                                bags={},
-                                group_id={},
-                                courses='{}'
+                                    wage={},
+                                    bags={},
+                                    group_id={},
+                                    courses='{}'
                                 WHERE id={}"""
                         print(s.format(day, wage, bags, group, courses, num))
                         cur.execute(s.format(day, wage, bags, group, courses, num),)
                     con.commit()
                     context["msg"] = "Record successfully updated"
-            else:
-                context["msg"] = "PW incorrect"
-        except:
-            con.rollback()
-            context["msg"] = "error in update operation"
+            except:
+                con.rollback()
+                context["msg"] = "error in update operation"
+        else:
+            context["msg"] = "PW incorrect"
 
     with connect(DATABASE) as con:
         con.row_factory = sql.Row
@@ -304,10 +301,10 @@ def create_group(num):
 
 @app.route("/person/<num>", methods=["GET", "POST"])
 def person(num):
-    print(request.files)
+    # print(request.files)
     print(request.form)
-    print(request.form["filename"])
-    print(type(request.form["filename"]))
+    # print(request.form["image_file"])
+    # print(type(request.form["filename"]))
     context = dict()
     if request.method == "POST":
         try:
@@ -342,6 +339,8 @@ def person(num):
     cur.execute(f"select * from people where id={num}")
     row = cur.fetchone()
     con.close()
+    if not row["first_name"]:
+        row = dict(first_name="", last_name="", notes="", lat="", lon="")
     context.update(
         {
             "num": num,
