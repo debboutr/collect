@@ -1,3 +1,4 @@
+version: '3'
 services:
     app:
       build: .
@@ -12,5 +13,17 @@ services:
       tty: true
       ports:
         - "8085:5000"
+      volumes:
+        - .:/app
+    node:
+      build: 
+        context: .
+        dockerfile: ./Dockerfile_node
+      image: collect:node
+      container_name: node
+      command: npx tailwindcss -i /app/static/src/input.css -o /app/static/css/main.css --watch
+      stdin_open: true
+      tty: true
+      stop_grace_period: 0s
       volumes:
         - .:/app
