@@ -4,7 +4,7 @@
   value="bandon"
   name="bandon-checkbox"
   class="appearance-none peer/bandon"
-  {% if 'bandon' in row.courses %}
+  {% if row.courses and 'bandon' in row.courses %}
     checked
   {% endif %}
 >
@@ -24,7 +24,7 @@
   value="pac"
   name="pac-checkbox"
   class="appearance-none peer/pac"
-  {% if "pac" in row.courses %}
+  {% if row.courses and "pac" in row.courses %}
     checked
   {% endif %}
 >
@@ -44,7 +44,7 @@
   value="trails"
   name="trails-checkbox"
   class="appearance-none peer/trails"
-  {% if "trails" in row.courses %}
+  {% if row.courses and "trails" in row.courses %}
     checked
   {% endif %}
 >
@@ -64,7 +64,7 @@
   value="oldmac"
   name="oldmac-checkbox"
   class="appearance-none peer/oldmac"
-  {% if "oldmac" in row.courses %}
+  {% if row.courses and "oldmac" in row.courses %}
     checked
   {% endif %}
 >
@@ -84,7 +84,7 @@
   value="sheep"
   name="sheep-checkbox"
   class="appearance-none peer/sheep"
-  {% if "sheep" in row.courses %}
+  {% if row.courses and "sheep" in row.courses %}
     checked
   {% endif %}
 >
