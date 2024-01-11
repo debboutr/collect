@@ -101,7 +101,7 @@ def edit(num):
                     cur = con.cursor()
                     if num == "new":
                         cur.execute(
-                            "INSERT INTO loops (date, wage,bags, group_id) VALUES (?,?,?,?,?)",
+                            "INSERT INTO loops (date, wage,bags, group_id, courses) VALUES (?,?,?,?,?)",
                             (day, wage, bags, group, courses),
                         )
                     else:
@@ -117,11 +117,13 @@ def edit(num):
                         cur.execute(s.format(day, wage, bags, group, courses, num),)
                     con.commit()
                     context["msg"] = "Record successfully updated"
-            except:
+            except Exception as e:
                 con.rollback()
                 context["msg"] = "error in update operation"
+                print("error in update operation", e)
         else:
             context["msg"] = "PW incorrect"
+            print("something else")
 
     with connect(DATABASE) as con:
         con.row_factory = sql.Row
