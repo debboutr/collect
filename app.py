@@ -43,7 +43,7 @@ def home():
                 sum(wage) as wages,
                 sum(bags) as bags,
                 count(wage) as days_worked,
-                round(avg(wage)/bags, 2) as avg_wage
+                round(sum(wage)/sum(bags), 2) as avg_wage
                         from loops
                         where
                             substr(date, 0, 5) = '{}';"""

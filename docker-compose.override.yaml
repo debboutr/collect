@@ -1,20 +1,17 @@
-version: '3'
 services:
     app:
       build: .
       image: collect:latest
+      container_name: collect
       environment:
         - FLASK_APP=app.py
         - FLASK_ENV=development
         - PYTHONUNBUFFERED=1
-      container_name: collect
       command: flask run --host=0.0.0.0 --port 5000
       stdin_open: true
       tty: true
       ports:
         - "8085:5000"
-      volumes:
-        - .:/app
     node:
       build: 
         context: .

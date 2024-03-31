@@ -1,0 +1,9 @@
+services:
+    app:
+      build: .
+      image: collect:latest
+      container_name: collect
+      command: /usr/local/bin/gunicorn -w 3 -b :5000 wsgi:app
+      ports:
+        - "8085:5000"
+
