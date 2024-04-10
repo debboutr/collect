@@ -1,4 +1,5 @@
 import os
+from types import SimpleNamespace
 import sqlite3 as sql
 from datetime import datetime as dt
 from pathlib import Path
@@ -35,7 +36,6 @@ def home():
 
     context = dict()
     now = dt.now()
-    flash("this should go away")
     with sql.connect(DATABASE) as con:
         con.row_factory = sql.Row
         cur = con.cursor()
@@ -49,7 +49,7 @@ def home():
                             substr(date, 0, 5) = '{}';"""
         cur.execute(s.format(now.year))
         stats = cur.fetchone()
-        s = """select date, wage, bags, loops.group_id, name
+        s = """select id, date, wage, bags, loops.group_id, name
                     from loops 
                     inner join groups
                     on loops.group_id = groups.group_id
@@ -70,10 +70,11 @@ def home():
                             loops.group_id;"""
         cur.execute(test)
         frows = cur.fetchall()
-    # print(dict(frows[0]))
-    # print(dict(frows[1]))
-    # print(dict(frows[2]))
-    # print(len(frows))
+    # stats = dict(stats)
+    print(stats)
+    stats = SimpleNamespace(**{k: stats[k] for k in stats.keys()})
+    print(stats)
+    flash(f"{stats.bags} BAGS!!!")
     context.update(
         {
             "rows": rows,
