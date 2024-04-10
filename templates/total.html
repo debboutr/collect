@@ -12,7 +12,7 @@
     {% for row in rows %}
     <tr>
       <td>{{ row["id"] }}</td>
-      <td>{{ row.date.strftime("%d-%d-%Y") }}</td>
+      <td>{{ row.date.strftime("%m-%d-%Y") }}</td>
       <td>{{ row.date.strftime("%A") }}</td>
       <td>{{ row["wage"] | round | int }}</td>
       <td>{{ (row["bags"]|string).rstrip('.0') }}</td>
