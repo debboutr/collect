@@ -11,7 +11,7 @@
     {% endblock %}
   </head>
   <body>
-    <div class="bg-zinc-200">{% block content %}{% endblock %}</div>
+    <div class="h-full bg-zinc-200">{% block content %}{% endblock %}</div>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}

@@ -83,6 +83,8 @@ def home():
             "now": now,
         }
     )
+    print(request.url)
+    print(request.path)
     return render_template("home.html", **context)
 
 
@@ -118,13 +120,15 @@ def edit(num):
                         cur.execute(s.format(day, wage, bags, group, courses, num),)
                     con.commit()
                     context["msg"] = "Record successfully updated"
+                    flash("Record successfully updated")
+                    return redirect(request.path)
+                    # return redirect(url_for("home"))
             except Exception as e:
                 con.rollback()
                 context["msg"] = "error in update operation"
                 print("error in update operation", e)
         else:
             context["msg"] = "PW incorrect"
-            print("something else")
 
     with connect(DATABASE) as con:
         con.row_factory = sql.Row
@@ -163,6 +167,8 @@ def edit(num):
             "user": session,
         }
     )
+    print(request.url)
+    print(request.path)
     return render_template("edit.html", **context)
 
 

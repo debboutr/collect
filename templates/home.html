@@ -46,8 +46,8 @@
   {% endfor %}
 </div>
 
-<div class="grid grid-cols-3 gap-2 mt-4">
-  <div class="flex flex-col bg-green-200 text-2xl text-center font-bold">
+<div class="flex flex-row sm:flex-col sm:font-44 mt-4">
+  <div class="flex flex-col w-1/3 sm:w-full bg-green-200 text-2xl text-center font-bold">
     <span class="pt-4 text-5xl">{{ now.year }}</span>
     <span class="pt-4">Days Worked</span>
     <span>{{ stats.days_worked }} / {{ now.timetuple().tm_yday }}</span>
@@ -56,7 +56,7 @@
     <span class="pt-4">Avg. Bag Fee</span>
     <span>${{ stats.avg_wage  }}</span>
   </div>
-  <div class="bg-green-200">
+  <div class="w-1/3 sm:w-full bg-green-200">
     <table
       class="min-w-full text-left text-md font-bold">
       <thead
@@ -70,28 +70,38 @@
       </thead>
       <tbody>
        {% for row in rows %}
-        <tr onclick="window.location.href='{{ url_for('edit', num=row['id']) }}';"
+        <tr onclick="window.location.href='{{ url_for('edit', num=row.id) }}';"
             class="hover:bg-green-400 border-b border-zinc-400 text-sm font-medium">
-          <td class="whitespace-nowrap px-6 py-2 font-medium">{{ row["date"][5:] }}</td>
+          <td class="whitespace-nowrap px-6 py-2 font-medium">{{ row.date[5:] }}</td>
           <td class="whitespace-nowrap px-6 py-2">
             <a type="button"
-               class="bg-amber-500 hover:bg-amber-400 text-white font-bold py-2 px-4 rounded"
+               class="rounded-3xl border-2 
+                {% if row.wage <= 250 %}
+                 border-red-500 hover:bg-red-400
+                {% elif row.wage > 250 and row.wage <= 400 %}
+                 border-blue-500 hover:bg-blue-400
+                {% elif row.wage > 400 and row.wage <= 600 %}
+                 border-green-500 hover:bg-green-400
+                {% elif row.wage > 600 %}
+                 border-amber-500 hover:bg-amber-400
+                {% endif %}
+               font-bold py-1 px-4 rounded"
               href="{{ url_for('create_group', num=row['group_id']) }}">
-              {{ row["name"] }}
+              {{ row.name.title() }}
             </a>
           </td>
-          <td class="whitespace-nowrap px-6 py-2">{{ row["wage"] | round | int }}</td>
-          <td class="whitespace-nowrap px-6 py-2">{{ (row["bags"] | string).rstrip('.0') }}</td>
+          <td class="whitespace-nowrap px-6 py-2">{{ row.wage | round | int }}</td>
+          <td class="whitespace-nowrap px-6 py-2">{{ (row.bags | string).rstrip('.0') }}</td>
         </tr>
        {% endfor %}
       </tbody>
     </table>
   </div>
-  <div class="bg-green-200">
+  <div class="w-1/3 sm:w-full bg-green-200">
   </div>
 </div>
 
-<div class="fixed flex flex-col bottom-12 left-0">
+<div class="fixed flex flex-col top-48 left-0">
     <a type="button" class="text-6xl text-center bg-amber-500 hover:bg-amber-400 text-white font-bold py-2 px-4 m-12
       rounded-full" href='{{ url_for('edit', num="new") }}'>
       <b>+</b>
@@ -101,7 +111,7 @@
       <b>i</b>
     </a>
 </div>
-<div class="fixed flex flex-col bottom-12 right-0">
+<div class="fixed flex flex-col top-48 right-0">
     <a type="button" class="text-5xl text-center bg-amber-500 hover:bg-amber-400 text-white font-bold py-4 px-4 m-12
       rounded-full" href='{{ url_for("months") }}'>
       <b>Mon</b>
