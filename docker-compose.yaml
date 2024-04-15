@@ -4,5 +4,3 @@ services:
       image: collect:latest
       container_name: collect
       restart: always
-      volumes:
-        - .:/app
