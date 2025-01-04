@@ -35,7 +35,7 @@ def home():
     """A place to show all of your efforts"""
 
     context = dict()
-    now = dt.now()
+    now = dt(2024, 12, 31)
     with sql.connect(DATABASE) as con:
         con.row_factory = sql.Row
         cur = con.cursor()
@@ -47,6 +47,7 @@ def home():
                         from loops
                         where
                             substr(date, 0, 5) = '{}';"""
+        print(f"{s.format(now.year)=}")
         cur.execute(s.format(now.year))
         stats = cur.fetchone()
         s = """select id, date, wage, bags, loops.group_id, name
@@ -70,10 +71,8 @@ def home():
                             loops.group_id;"""
         cur.execute(test)
         frows = cur.fetchall()
-    # stats = dict(stats)
-    print(stats)
     stats = SimpleNamespace(**{k: stats[k] for k in stats.keys()})
-    print(stats)
+    print(f"{stats=}")
     flash(f"{stats.bags} BAGS!!!")
     context.update(
         {
@@ -83,8 +82,8 @@ def home():
             "now": now,
         }
     )
-    print(request.url)
-    print(request.path)
+    # print(request.url)
+    # print(request.path)
     return render_template("home.html", **context)
 
 

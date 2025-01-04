@@ -27,4 +27,15 @@ TABLES
 * people
     -- id, first_name, last_name, notes, lat, lon, group_id
 
+SQLMODEL
+* type-hint for the Base class, `id` is set by the DB on creation.
+
+HTMX
+what are the buttons that will be involved..
+* form for adding a day of work
+* form for creating a person/s and group
+* button to list days of work, total OR by group OR by date 
+* add a location to a player/person
+* update a day of work EDIT
+* go to leaflet map with all players located
 
